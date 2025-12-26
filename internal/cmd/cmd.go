@@ -8,7 +8,6 @@ import (
 	"github.com/gogf/gf/v2/os/gcmd"
 
 	"gf_template/internal/consts"
-	"gf_template/internal/controller/hello"
 )
 
 var (
@@ -21,10 +20,6 @@ var (
 			s.SetSwaggerUITemplate(consts.SwaggerTpl)
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				group.Middleware(ghttp.MiddlewareHandlerResponse)
-
-				group.Bind(
-					hello.NewV1(),
-				)
 			})
 			s.Run()
 			return nil
