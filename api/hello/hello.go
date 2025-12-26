@@ -12,4 +12,5 @@ import (
 
 type IHelloV1 interface {
 	Hello(ctx context.Context, req *v1.HelloReq) (res *v1.HelloRes, err error)
+	UserList(ctx context.Context, req *v1.UserListReq) (res *v1.UserListRes, err error)
 }

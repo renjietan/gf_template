@@ -2,12 +2,23 @@
 # CLI tool, only in development environment.
 # https://goframe.org/docs/cli
 gfcli:
+  # 工具编译配置
+  build:
+    name: "shop"
+    arch: "amd64"
+    system: "linux,darwin,windows"
+    mod: ""
+    cgo: 0
+
+  # dao生成
   gen:
     dao:
-      - link: "mysql:root:12345678@tcp(127.0.0.1:3306)/test"
+      - type: "mysql"
+        host: "127.0.0.1"
+        port: "3306"
+        user: "root"
+        pass: "123456"
+        name: "gf_template"
+        debug: true
         descriptionTag: true
-
-  docker:
-    build: "-a amd64 -s linux -p temp -ew"
-    tagPrefixes:
-      - my.image.pub/my-app
+        noModelComment: true

@@ -1,19 +1,20 @@
+// https://goframe.org/docs/web/api-document-swagger-ui
 package consts
 
+// 1-2、自定义 【swagger】 模板, 共三步
 const (
-	SwaggerTpl = `
-<!DOCTYPE html>
+	SwaggerTpl = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="SwaggerUI"/>
     <title>SwaggerUI</title>
-    <link rel="stylesheet" href="swagger/css/swagger-ui.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.10.5/swagger-ui.min.css" />
 </head>
 <body>
 <div id="swagger-ui"></div>
-<script src="template/swagger/js/swagger-ui-bundle.js" crossorigin></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.10.5/swagger-ui-bundle.js" crossorigin></script>
 <script>
     window.onload = () => {
         window.ui = SwaggerUIBundle({

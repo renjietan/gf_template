@@ -1,0 +1,34 @@
+# https://goframe.org/docs/web/server-config-file-template
+
+###################### 修改配置文件需要重启服务 ######################
+server:
+  address: ":8000"
+  openapiPath: "/api.json"
+  swaggerPath: "/swagger"
+
+# https://goframe.org/docs/core/glog-config
+logger:
+  level: "all"
+  stdout: true
+
+# https://goframe.org/docs/core/gdb-config-file
+database:
+  logger:
+    path: "../../logger/sql/"
+    level: "all"
+    ctxKeys: ["RequestId"] # 用于配置需要从 context.Context 接口对象中读取并输出的键名。
+    stdout: true # 日志是否同时输出到终端。默认true
+  default:
+    type: "mysql"
+    host: "127.0.0.1"
+    port: "3306"
+    user: "root"
+    pass: "123456"
+    name: "gf_template"
+    charset: "utf8mb4"
+    timezone: "Local"
+    maxIdle: "10" # (可选)连接池最大闲置的连接数(默认10)
+    maxOpen: "100" # (可选)连接池最大打开的连接数(默认无限制)
+    maxLifetime: "30s" # (可选)连接对象可重复使用的时间长度(默认30秒)
+    extra: "parseTime=True" #  (可选)不同数据库的额外特性配置，由底层数据库driver定义，具体有哪些配置请查看具体的数据库driver介绍
+
