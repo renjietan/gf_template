@@ -1,11 +1,10 @@
 package main
 
 import (
-	_ "gf_template/internal/packed"
-
 	"github.com/gogf/gf/v2/os/gctx"
 
 	"gf_template/internal/cmd"
+	_ "gf_template/internal/packed"
 )
 
 func main() {
