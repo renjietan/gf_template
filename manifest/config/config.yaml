@@ -14,8 +14,6 @@ logger:
 # https://goframe.org/docs/core/gdb-config-file
 database:
   default:
-    link:  "mysql:root:123456@tcp(127.0.0.1:3306)/gf_template"
-  mysql:
     type: "mysql"
     host: "127.0.0.1"
     port: "3306"

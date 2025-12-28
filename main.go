@@ -5,6 +5,8 @@ import (
 
 	"gf_template/internal/cmd"
 	_ "gf_template/internal/packed"
+
+	_ "github.com/gogf/gf/v2" // 导入 MySQL 驱动
 )
 
 func main() {
