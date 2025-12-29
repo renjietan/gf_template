@@ -4,7 +4,7 @@
 gfcli:
   # 工具编译配置
   # build:
-  #   name: "shop"
+  #   name: "gf_template"
   #   arch: "amd64"
   #   system: "linux,darwin,windows"
   #   mod: ""

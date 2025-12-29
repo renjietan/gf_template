@@ -2,14 +2,15 @@ package user
 
 import (
 	"context"
-	v1 "gf_template/api/user/v1"
-	"gf_template/internal/dao"
-	"gf_template/internal/model/entity"
 
 	_ "github.com/gogf/gf/contrib/drivers/mysql/v2"
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
+
+	v1 "gf_template/api/user/v1"
+	"gf_template/internal/dao"
+	"gf_template/internal/model/entity"
 )
 
 func (c *ControllerV1) GetList(ctx context.Context, req *v1.GetListReq) (res *v1.GetListRes, err error) {
@@ -22,13 +23,13 @@ func (c *ControllerV1) GetList(ctx context.Context, req *v1.GetListReq) (res *v1
 		err = query.WhereLike("name", "%"+*req.Name+"%").Limit(
 			int(req.Page)-1,
 			int(req.Size),
-		).ScanAndCount(&res.List, totalIntPtr, false)
+		).ScanAndCount(&res.Data, totalIntPtr, false)
 	} else {
 		err = query.Limit(
 			int(req.Page)-1,
 			int(req.Size),
-		).ScanAndCount(&res.List, &res.Total, false)
-		res.Length = len(res.List)
+		).ScanAndCount(&res.Data, &res.Total, false)
+		res.Length = len(res.Data)
 	}
 	return
 }

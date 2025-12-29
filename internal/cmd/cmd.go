@@ -9,7 +9,7 @@ import (
 
 	"gf_template/internal/consts"
 	"gf_template/internal/controller/user"
-	"gf_template/utility"
+	middlewave "gf_template/internal/middlewave/logger"
 )
 
 var (
@@ -26,9 +26,11 @@ var (
 			// 3、开启 国际化 & 设置 默认语言
 			g.I18n().SetLanguage("zh-CN")
 			// 4、拦截器
-			s.Use(utility.MiddlewareRequest)
+			s.Use(middlewave.Logger)
+			// 5、默认的中间件处理程序响应对象及其错误。
+			s.Use(ghttp.MiddlewareHandlerResponse)
+			//
 			s.Group("/", func(group *ghttp.RouterGroup) {
-				group.Middleware(ghttp.MiddlewareHandlerResponse)
 				group.Bind(
 					user.NewV1(),
 				)

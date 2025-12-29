@@ -7,7 +7,7 @@ type CommonPaginationReq struct {
 }
 
 type CommonPaginationRes[T any] struct {
-	List   []T `dc:"列表数据"`
+	Data   []T `dc:"列表数据"`
 	Total  int `dc:"总数"`
 	Page   int `dc:"分页号码"`
 	Size   int `dc:"分页数量"`
