@@ -29,13 +29,13 @@ var (
 			// 4、自定义 拦截器 中间件
 			s.Use(interceptor.Init)
 			// 5、自定义 日志 中间件
-			s.Use(logger.Init(nil)) // 使用默认配置
-			// s.Use(logger.Init(&logger.LogConfig{ // 自定义 日志中间件 配置
-			// 	LogPath:       "./logs",
-			// 	MaxAge:        30,               // 保留30天
-			// 	RotationSize:  50 * 1024 * 1024, // 50MB切割
-			// 	RotationCount: 30,
-			// }))
+			// s.Use(logger.Init(nil)) // 使用默认配置
+			s.Use(logger.Init(&logger.LogConfig{ // 自定义 日志中间件 配置
+				LogPath:       "./logs",
+				MaxAge:        30,               // 保留30天
+				RotationSize:  50 * 1024 * 1024, // 50MB切割
+				RotationCount: 30,
+			}))
 			// 5、默认的中间件处理程序响应对象及其错误。
 			s.Use(ghttp.MiddlewareHandlerResponse)
 			//
