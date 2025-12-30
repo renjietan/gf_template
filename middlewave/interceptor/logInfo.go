@@ -7,6 +7,7 @@ import (
 )
 
 type LogInfo struct {
+	TraceID     string      `json:"traceId"`     // 请求追踪ID
 	Method      string      `json:"method"`      // 请求方法
 	Path        string      `json:"path"`        // 请求路径
 	URL         string      `json:"url"`         // 完整URL

@@ -2,14 +2,13 @@ package interceptor
 
 import (
 	"context"
-	"encoding/json"
+	"math/rand"
 	"sync"
 	"time"
 
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/util/gconv"
-	"github.com/gogf/gf/v2/util/grand"
 )
 
 var (
@@ -21,9 +20,15 @@ var (
 // GetLogProcessor 获取全局日志处理器（单例模式）
 func GetLogProcessor() *LogProcessor {
 	processorOnce.Do(func() {
+		// 创建协程的持久化上下文
+		workerCtx := context.Background()
+		// 可以在这里为协程上下文添加一些特定值
+		workerCtx = context.WithValue(workerCtx, "worker", "log_processor")
+
 		globalProcessor = &LogProcessor{
 			logChan:    make(chan *LogInfo, 1000), // 缓冲通道，防止阻塞
 			workerExit: make(chan bool),
+			ctx:        workerCtx, // 使用持久化上下文
 		}
 		// 启动协程
 		globalProcessor.StartWorker()
@@ -40,11 +45,12 @@ func Logger(r *ghttp.Request) {
 
 	// 创建日志信息结构
 	logInfo := &LogInfo{
+		TraceID:     traceID,
 		Method:      r.Method,
 		Path:        r.URL.Path,
 		URL:         r.Request.URL.String(),
 		QueryParams: r.URL.RawQuery,
-		RequestTime: startTime.Format("2006-01-02 15:04:05"),
+		RequestTime: startTime.Format("2006-05-04 15:02:01"),
 		Status:      r.Response.Status,
 	}
 
@@ -52,31 +58,49 @@ func Logger(r *ghttp.Request) {
 	ctx := context.WithValue(r.Context(), "traceId", traceID)
 	r.SetCtx(ctx)
 
+	// 根据请求方法获取请求参数
 	switch r.Method {
 	case "GET", "DELETE":
-		if len(r.GetMap()) > 0 {
-			logInfo.QueryParams = r.GetMap()
+		// GET 和 DELETE 请求通常使用 Query 参数
+		if params := r.GetMap(); len(params) > 0 {
+			logInfo.BodyParams = params
 		}
 	case "POST", "PUT", "PATCH":
+		// POST、PUT、PATCH 请求获取 Body 参数
 		contentType := r.Header.Get("Content-Type")
-		switch contentType {
-		case "application/x-www-form-urlencoded", "multipart/form-data":
+		switch {
+		case contentType == "application/json":
+			// JSON 请求体
+			var jsonBody interface{}
+			if err := r.Parse(&jsonBody); err == nil && jsonBody != nil {
+				logInfo.BodyParams = jsonBody
+			}
+		case contentType == "application/x-www-form-urlencoded",
+			contentType == "multipart/form-data":
 			// Form 表单数据
 			if formData := r.GetFormMap(); len(formData) > 0 {
 				logInfo.BodyParams = formData
 			}
 		default:
+			// 其他类型，尝试获取原始 Body
 			if bodyBytes := r.GetBody(); len(bodyBytes) > 0 {
-				var bodyJson = map[string]any{}
-				err := json.Unmarshal(bodyBytes, &bodyJson)
-				if err == nil {
-					logInfo.BodyParams = bodyJson
+				// 如果是批量操作，可能包含数组
+				if r.URL.Path == "/batch" || len(bodyBytes) < 1024 { // 小数据直接转换
+					logInfo.BodyParams = gconv.String(bodyBytes)
 				} else {
-					logInfo.BodyParams = bodyBytes
+					// 大数据只记录长度
+					logInfo.BodyParams = map[string]interface{}{
+						"body_length":  len(bodyBytes),
+						"content_type": contentType,
+					}
 				}
 			}
 		}
 	}
+
+	// 保存请求日志信息到上下文
+	ctx = context.WithValue(r.Context(), "requestLogInfo", logInfo)
+	r.SetCtx(ctx)
 
 	// 执行后续中间件和业务逻辑
 	r.Middleware.Next()
@@ -112,20 +136,19 @@ func Logger(r *ghttp.Request) {
 		logInfo.Error = err.Error()
 	}
 
-	// 将完整日志信息存入上下文
-	ctx = context.WithValue(r.Context(), "gServer_info", logInfo)
-	r.SetCtx(ctx)
-
 	// 发送日志到全局协程处理器
 	processor := GetLogProcessor()
 	processor.SendLog(logInfo)
+
+	// 将完整日志信息存入上下文
+	ctx = context.WithValue(r.Context(), "responseLogInfo", logInfo)
+	r.SetCtx(ctx)
 }
 
 // generateTraceID 生成请求追踪ID
 func generateTraceID() string {
 	// 使用时间戳和随机数生成traceID
-	// 实际项目中可以使用UUID或雪花算法
-	return gconv.String(time.Now().UnixNano()) + "-" + gconv.String(grand.N(0, 10000))
+	return gconv.String(time.Now().UnixNano()) + "-" + gconv.String(rand.Intn(10000))
 }
 
 // GetTraceIDFromCtx 从上下文中获取traceID
@@ -140,7 +163,17 @@ func GetTraceIDFromCtx(ctx context.Context) string {
 
 // GetLogInfoFromCtx 从上下文中获取日志信息
 func GetLogInfoFromCtx(ctx context.Context) *LogInfo {
-	if value := ctx.Value("gServer_info"); value != nil {
+	if value := ctx.Value("responseLogInfo"); value != nil {
+		if info, ok := value.(*LogInfo); ok {
+			return info
+		}
+	}
+	return nil
+}
+
+// GetRequestInfoFromCtx 从上下文中获取请求信息
+func GetRequestInfoFromCtx(ctx context.Context) *LogInfo {
+	if value := ctx.Value("requestLogInfo"); value != nil {
 		if info, ok := value.(*LogInfo); ok {
 			return info
 		}
@@ -150,15 +183,18 @@ func GetLogInfoFromCtx(ctx context.Context) *LogInfo {
 
 // Init 初始化日志处理器
 func Init() {
+	// 初始化随机数种子
+	rand.Seed(time.Now().UnixNano())
+
 	// 启动时初始化全局处理器
 	_ = GetLogProcessor()
-	g.Log().Info(context.Background(), "日志管理器初始化！")
+	g.Log().Info(context.Background(), "Log processor initialized")
 }
 
 // Shutdown 关闭日志处理器
 func Shutdown() {
 	if globalProcessor != nil {
 		globalProcessor.StopWorker()
-		g.Log().Info(context.Background(), "日志关闭")
+		g.Log().Info(context.Background(), "Log processor shutdown")
 	}
 }

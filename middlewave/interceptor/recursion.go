@@ -115,12 +115,12 @@ func convertValue(v reflect.Value) interface{} {
 }
 
 // PrintAsJSON 将数据以美观的JSON格式打印
-func PrintAsJSON(data interface{}) (res string, err error) {
+func PrintAsJSON(data interface{}) (res string, err string) {
 	jsonData := ConvertToJSONSerializable(data)
 
-	jsonBytes, err := json.MarshalIndent(jsonData, "", "  ")
-	if err != nil {
-		return "", err
+	jsonBytes, error := json.MarshalIndent(jsonData, "", "  ")
+	if error != nil {
+		return "", ""
 	}
-	return string(jsonBytes), nil
+	return string(jsonBytes), ""
 }

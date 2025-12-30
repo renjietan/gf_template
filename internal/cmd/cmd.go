@@ -33,11 +33,9 @@ var (
 
 			// 4、自定义 拦截器 中间件
 			// s.Use(interceptor.Init)
-			interceptor.Init() // 先初始化日志管理器
-			defer func() {
-				interceptor.Shutdown()
-			}() // 程序退出时，确保关闭日志管理器
-			s.Use(interceptor.Logger)
+			interceptor.Init()           // 先初始化日志管理器
+			defer interceptor.Shutdown() // 程序退出时，确保关闭日志管理器
+			s.Use(interceptor.Logger)    // 日志中间件
 
 			// 5、默认的中间件处理程序响应对象及其错误。
 			s.Use(ghttp.MiddlewareHandlerResponse)

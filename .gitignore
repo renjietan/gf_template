@@ -10,9 +10,10 @@ bin/
 **/.DS_Store
 gf
 main
-main.exe
+*.exe
 output/
 manifest/output/
 temp/
 temp.yaml
 bin
+*.log
