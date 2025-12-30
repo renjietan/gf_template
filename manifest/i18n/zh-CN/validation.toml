@@ -39,6 +39,7 @@
 "gf.gvalid.rule.integer"              = "{field}字段值`{value}`字段应当为整数"
 "gf.gvalid.rule.float"                = "{field}字段值`{value}`字段应当为浮点数"
 "gf.gvalid.rule.boolean"              = "{field}字段值`{value}`字段应当为布尔值"
+"gf.gvalid.rule.string"              = "{field}字段值`{value}`字段应当为字符串"
 "gf.gvalid.rule.same"                 = "{field}字段值`{value}`字段值必须和{field}相同"
 "gf.gvalid.rule.different"            = "{field}字段值`{value}`字段值不能与{field}相同"
 "gf.gvalid.rule.in"                   = "{field}字段值`{value}`字段值应当满足取值范围:{pattern}"

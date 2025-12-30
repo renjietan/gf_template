@@ -37,6 +37,7 @@
 "gf.gvalid.rule.array" =                 "The {field} value `{value}` is not an array"
 "gf.gvalid.rule.integer" =               "The {field} value `{value}` is not an integer"
 "gf.gvalid.rule.boolean" =               "The {field} value `{value}` field must be true or false"
+"gf.gvalid.rule.string"  =               "The {field} value `{value}` field must be string"
 "gf.gvalid.rule.same" =                  "The {field} value `{value}` must be the same as field {pattern}"
 "gf.gvalid.rule.different" =             "The {field} value `{value}` must be different from field {pattern}"
 "gf.gvalid.rule.in" =                    "The {field} value `{value}` is not in acceptable range: {pattern}"

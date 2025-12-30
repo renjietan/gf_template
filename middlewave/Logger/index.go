@@ -224,5 +224,3 @@ func (l *Logger) Info(v ...interface{}) {
 func (l *Logger) Infof(format string, v ...interface{}) {
 	LogInfo(context.Background(), l.name+": "+fmt.Sprintf(format, v...))
 }
-
-// 其他级别的日志方法类似...

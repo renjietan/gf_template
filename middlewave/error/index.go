@@ -1,8 +1,8 @@
-package middlewave
+package errorHandle
 
 import "github.com/gogf/gf/v2/net/ghttp"
 
-func MiddlewareErrorHandler(r *ghttp.Request) {
+func Init(r *ghttp.Request) {
 	r.Middleware.Next()
 	if err := r.GetError(); err != nil {
 		r.Response.ClearBuffer()

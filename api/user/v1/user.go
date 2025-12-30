@@ -1,10 +1,10 @@
 package v1
 
 import (
+	"github.com/gogf/gf/v2/frame/g"
+
 	"gf_template/internal/model/entity"
 	"gf_template/utility"
-
-	"github.com/gogf/gf/v2/frame/g"
 )
 
 type GetListReq struct {
@@ -27,8 +27,7 @@ type GetOneRes struct {
 
 type CreateReq struct {
 	g.Meta `path:"/user" method:"post" tags:"User" summary:"Create user"`
-	// Name   string `v:"required|length:3,10" dc:"user name"`
-	// Age    uint   `v:"required|between:18,200" dc:"user age"`
+	Name   string `json:"name" v:"required" dc:"用户名称"`
 }
 type CreateRes struct {
 	Id int64 `json:"id" dc:"user id"`
