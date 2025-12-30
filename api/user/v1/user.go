@@ -7,13 +7,13 @@ import (
 	"gf_template/utility"
 )
 
-type GetListReq struct {
+type PagerReq struct {
 	g.Meta `path:"/user" method:"get" tags:"User" summary:"用户列表"`
 	// 可填 可不填 必须是指针类型
 	Name *string `dc:"用户名称"`
 	utility.CommonPaginationReq
 }
-type GetListRes struct {
+type PagerRes struct {
 	utility.CommonPaginationRes[*entity.TUser]
 }
 

@@ -8,6 +8,7 @@ server:
 
 # https://goframe.org/docs/core/glog-config
 logger:
+  path: "./glog"
   level: "all"
   stdout: true
 

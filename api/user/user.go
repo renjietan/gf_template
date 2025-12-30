@@ -7,11 +7,11 @@ package user
 import (
 	"context"
 
-	"gf_template/api/user/v1"
+	v1 "gf_template/api/user/v1"
 )
 
 type IUserV1 interface {
-	GetList(ctx context.Context, req *v1.GetListReq) (res *v1.GetListRes, err error)
+	GetList(ctx context.Context, req *v1.PagerReq) (res *v1.PagerRes, err error)
 	GetOne(ctx context.Context, req *v1.GetOneReq) (res *v1.GetOneRes, err error)
 	Create(ctx context.Context, req *v1.CreateReq) (res *v1.CreateRes, err error)
 	Delete(ctx context.Context, req *v1.DeleteReq) (res *v1.DeleteRes, err error)

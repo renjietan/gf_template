@@ -13,8 +13,8 @@ import (
 	"gf_template/internal/model/entity"
 )
 
-func (c *ControllerV1) GetList(ctx context.Context, req *v1.GetListReq) (res *v1.GetListRes, err error) {
-	res = &v1.GetListRes{}
+func (c *ControllerV1) GetList(ctx context.Context, req *v1.PagerReq) (res *v1.PagerRes, err error) {
+	res = &v1.PagerRes{}
 	totalInt := int(res.Total)
 	totalIntPtr := &totalInt
 	var query *gdb.Model = dao.TUser.Ctx(ctx).With(entity.FFamliy{})
@@ -23,13 +23,13 @@ func (c *ControllerV1) GetList(ctx context.Context, req *v1.GetListReq) (res *v1
 		err = query.WhereLike("name", "%"+*req.Name+"%").Limit(
 			int(req.Page)-1,
 			int(req.Size),
-		).ScanAndCount(&res.Data, totalIntPtr, false)
+		).ScanAndCount(&res.List, totalIntPtr, false)
 	} else {
 		err = query.Limit(
 			int(req.Page)-1,
 			int(req.Size),
-		).ScanAndCount(&res.Data, &res.Total, false)
-		res.Length = len(res.Data)
+		).ScanAndCount(&res.List, &res.Total, false)
+		res.Length = len(res.List)
 	}
 	return
 }

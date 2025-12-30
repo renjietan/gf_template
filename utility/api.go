@@ -7,11 +7,11 @@ type CommonPaginationReq struct {
 }
 
 type CommonPaginationRes[T any] struct {
-	Data   []T `dc:"列表数据"`
-	Total  int `dc:"总数"`
-	Page   int `dc:"分页号码"`
-	Size   int `dc:"分页数量"`
-	Length int `dc:"当前页条数"`
+	List   []T `json:"list" dc:"列表数据"`
+	Total  int `json:"total" dc:"总数"`
+	Page   int `json:"page" dc:"分页号码"`
+	Size   int `json:"size" dc:"分页数量"`
+	Length int `json:"length" dc:"当前页条数"`
 }
 
 type CommonIdReq struct {
