@@ -13,19 +13,19 @@ import (
 
 var (
 	// globalProcessor 全局日志处理器单例
-	globalProcessor *LogProcessor
+	globalProcessor *LogManager
 	processorOnce   sync.Once
 )
 
-// GetLogProcessor 获取全局日志处理器（单例模式）
-func GetLogProcessor() *LogProcessor {
+// GetLogManager 获取全局日志处理器（单例模式）
+func GetLogManager() *LogManager {
 	processorOnce.Do(func() {
 		// 创建协程的持久化上下文
 		workerCtx := context.Background()
 		// 可以在这里为协程上下文添加一些特定值
 		workerCtx = context.WithValue(workerCtx, "worker", "log_processor")
 
-		globalProcessor = &LogProcessor{
+		globalProcessor = &LogManager{
 			logChan:    make(chan *LogInfo, 1000), // 缓冲通道，防止阻塞
 			workerExit: make(chan bool),
 			ctx:        workerCtx, // 使用持久化上下文
@@ -137,7 +137,7 @@ func Logger(r *ghttp.Request) {
 	}
 
 	// 发送日志到全局协程处理器
-	processor := GetLogProcessor()
+	processor := GetLogManager()
 	processor.SendLog(logInfo)
 
 	// 将完整日志信息存入上下文
@@ -187,7 +187,7 @@ func Init() {
 	rand.Seed(time.Now().UnixNano())
 
 	// 启动时初始化全局处理器
-	_ = GetLogProcessor()
+	_ = GetLogManager()
 	g.Log().Info(context.Background(), "Log processor initialized")
 }
 

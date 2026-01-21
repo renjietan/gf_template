@@ -2,73 +2,72 @@ package interceptor
 
 import (
 	"context"
-	"gf_template/utility/ternary"
 	"sync"
 	"sync/atomic"
 
 	"github.com/gogf/gf/v2/frame/g"
+
+	"gf_template/utility/ternary"
 )
 
-// LogProcessor 日志处理器
-type LogProcessor struct {
+// 日志处理器
+type LogManager struct {
 	logChan         chan *LogInfo   // 日志通道
 	workerExit      chan bool       // 协程退出信号
 	workerOnce      sync.Once       // 确保协程只启动一次
-	isWorkerRunning bool            // 协程运行状态
+	isWorkerRunning atomic.Bool     // 协程运行状态
 	mutex           sync.RWMutex    // 读写锁
 	ctx             context.Context // 协程上下文（持久化）
-	closing         int32           // 关闭标志，原子操作
+	closing         atomic.Bool     // 关闭标志，原子操作
 	wg              sync.WaitGroup  // 等待协程退出
 }
 
-// StartWorker 启动日志处理协程
-func (lp *LogProcessor) StartWorker() {
-	lp.mutex.Lock()
-	defer lp.mutex.Unlock()
-
-	if !lp.isWorkerRunning {
-		lp.workerOnce.Do(func() {
-			lp.isWorkerRunning = true
-			lp.wg.Add(1)
-			go lp.workerRoutine()
+// 启动日志处理协程
+func (logger *LogManager) StartWorker() {
+	logger.isWorkerRunning.Store(true)
+	if !logger.isWorkerRunning.Load() {
+		logger.workerOnce.Do(func() {
+			logger.isWorkerRunning.Store(true)
+			logger.wg.Add(1)
+			go logger.workerRoutine()
 		})
 	}
 }
 
-// workerRoutine 日志处理协程（单协程处理所有日志）
-func (lp *LogProcessor) workerRoutine() {
+// 日志处理协程（单协程处理所有日志）
+func (logger *LogManager) workerRoutine() {
 	defer func() {
-		lp.wg.Done()
+		logger.wg.Done()
 		if err := recover(); err != nil {
 			// 使用协程的持久化上下文记录错误
-			g.Log().Error(lp.ctx, "Log processor panic recovered:", err)
+			g.Log().Error(logger.ctx, "Log processor panic recovered:", err)
 			// 重新启动协程
-			lp.mutex.Lock()
-			lp.isWorkerRunning = false
-			lp.workerOnce = sync.Once{}
-			lp.mutex.Unlock()
-			lp.StartWorker()
+			logger.isWorkerRunning.Store(false)
+			logger.mutex.Lock()
+			logger.workerOnce = sync.Once{}
+			logger.mutex.Unlock()
+			logger.StartWorker()
 		}
 	}()
 
 	for {
 		select {
-		case logInfo, ok := <-lp.logChan:
+		case logInfo, ok := <-logger.logChan:
 			if !ok {
-				g.Log().Info(lp.ctx, "通道已关闭, 退出")
+				g.Log().Info(logger.ctx, "通道已关闭, 退出")
 				return
 			}
-			lp.processLog(logInfo)
-		case <-lp.workerExit:
-			g.Log().Info(lp.ctx, "日志管理器已退出")
+			logger.processLog(logInfo)
+		case <-logger.workerExit:
+			g.Log().Info(logger.ctx, "日志管理器已退出")
 			return
 		}
 	}
 }
 
 // processLog 处理日志的实际逻辑
-func (lp *LogProcessor) processLog(logInfo *LogInfo) {
-	logCtx := context.WithValue(lp.ctx, "traceId", logInfo.TraceID)
+func (logger *LogManager) processLog(logInfo *LogInfo) {
+	logCtx := context.WithValue(logger.ctx, "traceId", logInfo.TraceID)
 	g.Log().Debugf(logCtx, "【START】%v(%v): (耗时: %v)%v", logInfo.Method, logInfo.Status, logInfo.Duration, logInfo.URL)
 	info, err := PrintAsJSON(logInfo)
 	info = ternary.If(err == "", info, err)
@@ -77,35 +76,28 @@ func (lp *LogProcessor) processLog(logInfo *LogInfo) {
 }
 
 // 发送日志到处理协程
-func (lp *LogProcessor) SendLog(logInfo *LogInfo) {
-	// 检查是否正在关闭
-	if atomic.LoadInt32(&lp.closing) == 1 {
+func (logger *LogManager) SendLog(logInfo *LogInfo) {
+	if logger.closing.Load() {
 		return
 	}
-	// 使用select避免阻塞，如果通道满则丢弃日志
 	select {
-	case lp.logChan <- logInfo:
-		// 成功发送
+	case logger.logChan <- logInfo:
+		// 防止堵塞
 	default:
-		// 通道已满，使用协程的持久化上下文记录警告
-		g.Log().Warning(lp.ctx, "Log channel is full, dropping log")
+		g.Log().Warning(logger.ctx, "通道已满")
 	}
 }
 
 // StopWorker 停止日志处理协程
-func (lp *LogProcessor) StopWorker() {
-	lp.mutex.Lock()
-	defer lp.mutex.Unlock()
+func (logger *LogManager) StopWorker() {
+	logger.mutex.Lock()
+	defer logger.mutex.Unlock()
 
-	if lp.isWorkerRunning {
-		// 设置关闭标志，阻止新的日志发送
-		atomic.StoreInt32(&lp.closing, 1)
-		// 关闭通道，这样workerRoutine会在处理完通道中已有的日志后退出
-		close(lp.logChan)
-		// 等待协程退出
-		lp.wg.Wait()
-		// 关闭退出信号通道，尽管我们已经通过关闭logChan让协程退出了，但这里还是关闭workerExit，防止协程阻塞在workerExit上
-		close(lp.workerExit)
-		lp.isWorkerRunning = false
+	if logger.isWorkerRunning.Load() {
+		logger.closing.Store(true)
+		close(logger.logChan)
+		logger.wg.Wait()
+		close(logger.workerExit)
+		logger.isWorkerRunning.Store(false)
 	}
 }
