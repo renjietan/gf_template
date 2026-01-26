@@ -9,14 +9,14 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// 用于 DAO 操作（如查询/数据操作）的表 t_user 的 Go 语言结构体。
+// TUser is the golang structure of table t_user for DAO operations like Where/Data.
 type TUser struct {
 	g.Meta   `orm:"table:t_user, do:true"`
 	Id       any         //
 	Name     any         //
 	FId      any         //
+	InfoId   any         //
 	DeleteAt any         //
 	CreateAt *gtime.Time //
 	UpdateAt *gtime.Time //
-	InfoId   any         //
 }

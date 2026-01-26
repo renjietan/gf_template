@@ -24,10 +24,10 @@ type TUserColumns struct {
 	Id       string //
 	Name     string //
 	FId      string //
+	InfoId   string //
 	DeleteAt string //
 	CreateAt string //
 	UpdateAt string //
-	InfoId   string //
 }
 
 // tUserColumns holds the columns for the table t_user.
@@ -35,10 +35,10 @@ var tUserColumns = TUserColumns{
 	Id:       "id",
 	Name:     "name",
 	FId:      "f_id",
+	InfoId:   "infoId",
 	DeleteAt: "delete_at",
 	CreateAt: "create_at",
 	UpdateAt: "update_at",
-	InfoId:   "infoId",
 }
 
 // NewTUserDao creates and returns a new DAO object for table data access.

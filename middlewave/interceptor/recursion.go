@@ -16,7 +16,7 @@ func ConvertToJSONSerializable(data interface{}) interface{} {
 	return convertValue(v)
 }
 
-// convertValue 递归转换反射值
+// 递归转换反射值
 func convertValue(v reflect.Value) interface{} {
 	// 处理指针，获取其指向的值
 	if v.Kind() == reflect.Ptr {

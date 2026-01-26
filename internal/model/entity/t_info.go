@@ -11,7 +11,7 @@ import (
 // TInfo is the golang structure for table t_info.
 type TInfo struct {
 	Id       int         `json:"id"       orm:"id"        description:""` //
-	Info     string      `json:"info"     orm:"info"      description:""` //
+	Info     string      `json:"info"     orm:"Info"      description:""` //
 	DeleteAt int         `json:"deleteAt" orm:"delete_at" description:""` //
 	CreateAt *gtime.Time `json:"createAt" orm:"create_at" description:""` //
 	UpdateAt *gtime.Time `json:"updateAt" orm:"update_at" description:""` //

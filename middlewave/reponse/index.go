@@ -7,6 +7,8 @@ import (
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/net/ghttp"
+
+	"gf_template/utility/ternary"
 )
 
 type DefaultHandlerResponse struct {
@@ -33,7 +35,6 @@ func MiddlewareHandlerResponse(r *ghttp.Request) {
 		return
 	}
 
-	// It does not output common response content if it is stream response.
 	mediaType, _, _ := mime.ParseMediaType(r.Response.Header().Get("Content-Type"))
 	for _, ct := range streamContentType {
 		if mediaType == ct {
@@ -62,7 +63,6 @@ func MiddlewareHandlerResponse(r *ghttp.Request) {
 			default:
 				code = gcode.CodeUnknown
 			}
-			// It creates an error as it can be retrieved by other middlewares.
 			err = gerror.NewCode(code, msg)
 			r.SetError(err)
 		} else {
@@ -70,17 +70,9 @@ func MiddlewareHandlerResponse(r *ghttp.Request) {
 		}
 		msg = code.Message()
 	}
-	if code.Code() == 0 {
-		r.Response.WriteJson(DefaultHandlerResponse{
-			Code:    code.Code(),
-			Message: msg,
-			Data:    res,
-		})
-	} else {
-		r.Response.WriteJson(DefaultHandlerResponse{
-			Code:    500,
-			Message: msg,
-			Data:    nil,
-		})
-	}
+	r.Response.WriteJson(DefaultHandlerResponse{
+		Code:    ternary.If(code.Code() == 0, 0, 500),
+		Message: msg,
+		Data:    ternary.If(code.Code() == 0, res, nil),
+	})
 }

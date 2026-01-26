@@ -12,23 +12,22 @@ import (
 )
 
 var (
-	// globalProcessor 全局日志处理器单例
+	// 全局日志处理器单例
 	globalProcessor *LogManager
 	processorOnce   sync.Once
 )
 
-// GetLogManager 获取全局日志处理器（单例模式）
+// 首次调用将初始化，第 N 次调用获取日志管理器指针
 func GetLogManager() *LogManager {
 	processorOnce.Do(func() {
 		// 创建协程的持久化上下文
 		workerCtx := context.Background()
-		// 可以在这里为协程上下文添加一些特定值
 		workerCtx = context.WithValue(workerCtx, "worker", "log_processor")
 
 		globalProcessor = &LogManager{
-			logChan:    make(chan *LogInfo, 1000), // 缓冲通道，防止阻塞
+			logChan:    make(chan *LogInfo, 1000),
 			workerExit: make(chan bool),
-			ctx:        workerCtx, // 使用持久化上下文
+			ctx:        workerCtx,
 		}
 		// 启动协程
 		globalProcessor.StartWorker()
@@ -36,7 +35,7 @@ func GetLogManager() *LogManager {
 	return globalProcessor
 }
 
-// Logger 全局日志中间件
+// 全局日志中间件
 func Logger(r *ghttp.Request) {
 	startTime := time.Now()
 
@@ -145,13 +144,13 @@ func Logger(r *ghttp.Request) {
 	r.SetCtx(ctx)
 }
 
-// generateTraceID 生成请求追踪ID
+// 生成请求追踪ID
 func generateTraceID() string {
 	// 使用时间戳和随机数生成traceID
 	return gconv.String(time.Now().UnixNano()) + "-" + gconv.String(rand.Intn(10000))
 }
 
-// GetTraceIDFromCtx 从上下文中获取traceID
+// 从上下文中获取traceID
 func GetTraceIDFromCtx(ctx context.Context) string {
 	if value := ctx.Value("traceId"); value != nil {
 		if traceID, ok := value.(string); ok {
@@ -161,7 +160,7 @@ func GetTraceIDFromCtx(ctx context.Context) string {
 	return ""
 }
 
-// GetLogInfoFromCtx 从上下文中获取日志信息
+// 从上下文中获取日志信息
 func GetLogInfoFromCtx(ctx context.Context) *LogInfo {
 	if value := ctx.Value("responseLogInfo"); value != nil {
 		if info, ok := value.(*LogInfo); ok {
@@ -171,7 +170,7 @@ func GetLogInfoFromCtx(ctx context.Context) *LogInfo {
 	return nil
 }
 
-// GetRequestInfoFromCtx 从上下文中获取请求信息
+// 从上下文中获取请求信息
 func GetRequestInfoFromCtx(ctx context.Context) *LogInfo {
 	if value := ctx.Value("requestLogInfo"); value != nil {
 		if info, ok := value.(*LogInfo); ok {
@@ -181,20 +180,20 @@ func GetRequestInfoFromCtx(ctx context.Context) *LogInfo {
 	return nil
 }
 
-// Init 初始化日志处理器
+// 初始化日志处理器
 func Init() {
 	// 初始化随机数种子
 	rand.Seed(time.Now().UnixNano())
 
 	// 启动时初始化全局处理器
 	_ = GetLogManager()
-	g.Log().Info(context.Background(), "Log processor initialized")
+	g.Log().Info(context.Background(), "初始化日志管理器")
 }
 
-// Shutdown 关闭日志处理器
+// 关闭日志处理器
 func Shutdown() {
 	if globalProcessor != nil {
 		globalProcessor.StopWorker()
-		g.Log().Info(context.Background(), "Log processor shutdown")
+		g.Log().Info(context.Background(), "关闭日志管理器")
 	}
 }

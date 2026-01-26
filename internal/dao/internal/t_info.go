@@ -31,7 +31,7 @@ type TInfoColumns struct {
 // tInfoColumns holds the columns for the table t_info.
 var tInfoColumns = TInfoColumns{
 	Id:       "id",
-	Info:     "info",
+	Info:     "Info",
 	DeleteAt: "delete_at",
 	CreateAt: "create_at",
 	UpdateAt: "update_at",

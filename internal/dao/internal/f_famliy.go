@@ -21,14 +21,20 @@ type FFamliyDao struct {
 
 // FFamliyColumns defines and stores column names for the table f_famliy.
 type FFamliyColumns struct {
-	Id   string //
-	Name string //
+	Id       string //
+	Name     string //
+	DeleteAt string //
+	CreateAt string //
+	UpdateAt string //
 }
 
 // fFamliyColumns holds the columns for the table f_famliy.
 var fFamliyColumns = FFamliyColumns{
-	Id:   "id",
-	Name: "name",
+	Id:       "id",
+	Name:     "name",
+	DeleteAt: "delete_at",
+	CreateAt: "create_at",
+	UpdateAt: "update_at",
 }
 
 // NewFFamliyDao creates and returns a new DAO object for table data access.

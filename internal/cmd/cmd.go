@@ -30,14 +30,14 @@ var (
 			g.DB().SetDebug(true)
 
 			// 3、开启 国际化 & 设置 默认语言
-			// g.I18n().SetLanguage("zh-CN")
+			g.I18n().SetLanguage("zh-CN")
 
 			// 4、自定义 拦截器 中间件
 			interceptor.Init()           // 先初始化日志管理器
 			defer interceptor.Shutdown() // 程序退出时，确保关闭日志管理器
 			s.Use(interceptor.Logger)    // 日志中间件
 
-			// 5、默认的中间件处理程序响应对象及其错误。
+			// 5、处理程序响应对象及其错误。
 			s.Use(reponse.MiddlewareHandlerResponse)
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				group.Bind(
@@ -45,7 +45,7 @@ var (
 				)
 			})
 			s.Run()
-			// 优雅关机
+			// 优雅关闭日志管理器
 			setupGracefulShutdown(s)
 			return nil
 		},

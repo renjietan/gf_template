@@ -10,13 +10,11 @@ import (
 
 // TUser is the golang structure for table t_user.
 type TUser struct {
-	Id       int         `json:"id"       orm:"id"        description:""` //
+	Id       int64       `json:"id"       orm:"id"        description:""` //
 	Name     string      `json:"name"     orm:"name"      description:""` //
 	FId      int         `json:"fId"      orm:"f_id"      description:""` //
+	InfoId   int64       `json:"infoId"   orm:"infoId"    description:""` //
 	DeleteAt int         `json:"deleteAt" orm:"delete_at" description:""` //
 	CreateAt *gtime.Time `json:"createAt" orm:"create_at" description:""` //
 	UpdateAt *gtime.Time `json:"updateAt" orm:"update_at" description:""` //
-	InfoId   int64       `json:"infoId"   orm:"infoId"    description:""` //
-	// FFamliy *FFamliy `orm:"with:f_id=id"`
-	// TInfo   *TInfo   `orm:"with:infoId=id"`
 }
