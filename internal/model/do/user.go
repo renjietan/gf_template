@@ -9,14 +9,14 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// TUser is the golang structure of table t_user for DAO operations like Where/Data.
-type TUser struct {
-	g.Meta   `orm:"table:t_user, do:true"`
+// User is the golang structure of table gf_user for DAO operations like Where/Data.
+type User struct {
+	g.Meta   `orm:"table:gf_user, do:true"`
 	Id       any         //
 	Name     any         //
 	FId      any         //
-	InfoId   any         //
 	DeleteAt any         //
 	CreateAt *gtime.Time //
 	UpdateAt *gtime.Time //
+	InfoId   any         //
 }

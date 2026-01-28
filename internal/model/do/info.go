@@ -9,11 +9,11 @@ import (
 	"github.com/gogf/gf/v2/os/gtime"
 )
 
-// FFamliy is the golang structure of table f_famliy for DAO operations like Where/Data.
-type FFamliy struct {
-	g.Meta   `orm:"table:f_famliy, do:true"`
+// Info is the golang structure of table gf_info for DAO operations like Where/Data.
+type Info struct {
+	g.Meta   `orm:"table:gf_info, do:true"`
 	Id       any         //
-	Name     any         //
+	Info     any         //
 	DeleteAt any         //
 	CreateAt *gtime.Time //
 	UpdateAt *gtime.Time //

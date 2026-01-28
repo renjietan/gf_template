@@ -14,7 +14,7 @@ type PagerReq struct {
 	utility.CommonPaginationReq
 }
 type PagerRes struct {
-	utility.CommonPaginationRes[*entity.TUser]
+	utility.CommonPaginationRes[*entity.User]
 }
 
 type GetOneReq struct {
@@ -22,7 +22,7 @@ type GetOneReq struct {
 	Id     int `v:"required" dc:"user id"`
 }
 type GetOneRes struct {
-	*entity.TUser `dc:"user"`
+	*entity.User `dc:"user"`
 }
 
 type CreateReq struct {

@@ -13,16 +13,19 @@ gfcli:
   gen:
     dao:
       - link: "mysql:root:123456@tcp(127.0.0.1:3306)/gf_template"
-        descriptionTag: true
-      # - type: "mysql"
-      #   host: "127.0.0.1"
-      #   port: "3306"
-      #   user: "root"
-      #   pass: "123456"
-      #   name: "gf_template"
-      #   debug: true
-      #   descriptionTag: true
-      #   noModelComment: true
+        group: "default"                                                # 分组 使用hotgo代码生成功能时必须填
+        # tables: ""                                                    # 指定当前数据库中需要执行代码生成的数据表。如果为空，表示数据库的所有表都会生成。
+        tablesEx: "hg_sys_addons_install"                               # 指定当前数据库中需要排除代码生成的数据表。
+        removePrefix: "gf_"
+        descriptionTag: true                                            # 为每个字段添加备注
+        noModelComment: true                                            # 用于指定是否关闭数据模型结构体属性的注释自动生成，内容为数据表对应字段的注释。
+        jsonCase: "CamelLower"
+        gJsonSupport: true
+        clear: false
+        # shardingPattern:                                              # 分库分表
+        #   - "users_?"
+        #   - "orders_?"
+        genTable: true                                                  # 用于控制是否生成数据库表字段定义文件
 
   # https://goframe.org/docs/web/server-config-file-template
 

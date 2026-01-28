@@ -11,64 +11,64 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// FFamliyDao is the data access object for the table f_famliy.
-type FFamliyDao struct {
+// InfoDao is the data access object for the table gf_info.
+type InfoDao struct {
 	table    string             // table is the underlying table name of the DAO.
 	group    string             // group is the database configuration group name of the current DAO.
-	columns  FFamliyColumns     // columns contains all the column names of Table for convenient usage.
+	columns  InfoColumns        // columns contains all the column names of Table for convenient usage.
 	handlers []gdb.ModelHandler // handlers for customized model modification.
 }
 
-// FFamliyColumns defines and stores column names for the table f_famliy.
-type FFamliyColumns struct {
+// InfoColumns defines and stores column names for the table gf_info.
+type InfoColumns struct {
 	Id       string //
-	Name     string //
+	Info     string //
 	DeleteAt string //
 	CreateAt string //
 	UpdateAt string //
 }
 
-// fFamliyColumns holds the columns for the table f_famliy.
-var fFamliyColumns = FFamliyColumns{
+// infoColumns holds the columns for the table gf_info.
+var infoColumns = InfoColumns{
 	Id:       "id",
-	Name:     "name",
+	Info:     "info",
 	DeleteAt: "delete_at",
 	CreateAt: "create_at",
 	UpdateAt: "update_at",
 }
 
-// NewFFamliyDao creates and returns a new DAO object for table data access.
-func NewFFamliyDao(handlers ...gdb.ModelHandler) *FFamliyDao {
-	return &FFamliyDao{
+// NewInfoDao creates and returns a new DAO object for table data access.
+func NewInfoDao(handlers ...gdb.ModelHandler) *InfoDao {
+	return &InfoDao{
 		group:    "default",
-		table:    "f_famliy",
-		columns:  fFamliyColumns,
+		table:    "gf_info",
+		columns:  infoColumns,
 		handlers: handlers,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of the current DAO.
-func (dao *FFamliyDao) DB() gdb.DB {
+func (dao *InfoDao) DB() gdb.DB {
 	return g.DB(dao.group)
 }
 
 // Table returns the table name of the current DAO.
-func (dao *FFamliyDao) Table() string {
+func (dao *InfoDao) Table() string {
 	return dao.table
 }
 
 // Columns returns all column names of the current DAO.
-func (dao *FFamliyDao) Columns() FFamliyColumns {
+func (dao *InfoDao) Columns() InfoColumns {
 	return dao.columns
 }
 
 // Group returns the database configuration group name of the current DAO.
-func (dao *FFamliyDao) Group() string {
+func (dao *InfoDao) Group() string {
 	return dao.group
 }
 
 // Ctx creates and returns a Model for the current DAO. It automatically sets the context for the current operation.
-func (dao *FFamliyDao) Ctx(ctx context.Context) *gdb.Model {
+func (dao *InfoDao) Ctx(ctx context.Context) *gdb.Model {
 	model := dao.DB().Model(dao.table)
 	for _, handler := range dao.handlers {
 		model = handler(model)
@@ -82,6 +82,6 @@ func (dao *FFamliyDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note: Do not commit or roll back the transaction in function f,
 // as it is automatically handled by this function.
-func (dao *FFamliyDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
+func (dao *InfoDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

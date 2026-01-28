@@ -11,68 +11,58 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-// TUserDao is the data access object for the table t_user.
-type TUserDao struct {
+// FamliyDao is the data access object for the table gf_famliy.
+type FamliyDao struct {
 	table    string             // table is the underlying table name of the DAO.
 	group    string             // group is the database configuration group name of the current DAO.
-	columns  TUserColumns       // columns contains all the column names of Table for convenient usage.
+	columns  FamliyColumns      // columns contains all the column names of Table for convenient usage.
 	handlers []gdb.ModelHandler // handlers for customized model modification.
 }
 
-// TUserColumns defines and stores column names for the table t_user.
-type TUserColumns struct {
-	Id       string //
-	Name     string //
-	FId      string //
-	InfoId   string //
-	DeleteAt string //
-	CreateAt string //
-	UpdateAt string //
+// FamliyColumns defines and stores column names for the table gf_famliy.
+type FamliyColumns struct {
+	Id   string //
+	Name string //
 }
 
-// tUserColumns holds the columns for the table t_user.
-var tUserColumns = TUserColumns{
-	Id:       "id",
-	Name:     "name",
-	FId:      "f_id",
-	InfoId:   "infoId",
-	DeleteAt: "delete_at",
-	CreateAt: "create_at",
-	UpdateAt: "update_at",
+// famliyColumns holds the columns for the table gf_famliy.
+var famliyColumns = FamliyColumns{
+	Id:   "id",
+	Name: "name",
 }
 
-// NewTUserDao creates and returns a new DAO object for table data access.
-func NewTUserDao(handlers ...gdb.ModelHandler) *TUserDao {
-	return &TUserDao{
+// NewFamliyDao creates and returns a new DAO object for table data access.
+func NewFamliyDao(handlers ...gdb.ModelHandler) *FamliyDao {
+	return &FamliyDao{
 		group:    "default",
-		table:    "t_user",
-		columns:  tUserColumns,
+		table:    "gf_famliy",
+		columns:  famliyColumns,
 		handlers: handlers,
 	}
 }
 
 // DB retrieves and returns the underlying raw database management object of the current DAO.
-func (dao *TUserDao) DB() gdb.DB {
+func (dao *FamliyDao) DB() gdb.DB {
 	return g.DB(dao.group)
 }
 
 // Table returns the table name of the current DAO.
-func (dao *TUserDao) Table() string {
+func (dao *FamliyDao) Table() string {
 	return dao.table
 }
 
 // Columns returns all column names of the current DAO.
-func (dao *TUserDao) Columns() TUserColumns {
+func (dao *FamliyDao) Columns() FamliyColumns {
 	return dao.columns
 }
 
 // Group returns the database configuration group name of the current DAO.
-func (dao *TUserDao) Group() string {
+func (dao *FamliyDao) Group() string {
 	return dao.group
 }
 
 // Ctx creates and returns a Model for the current DAO. It automatically sets the context for the current operation.
-func (dao *TUserDao) Ctx(ctx context.Context) *gdb.Model {
+func (dao *FamliyDao) Ctx(ctx context.Context) *gdb.Model {
 	model := dao.DB().Model(dao.table)
 	for _, handler := range dao.handlers {
 		model = handler(model)
@@ -86,6 +76,6 @@ func (dao *TUserDao) Ctx(ctx context.Context) *gdb.Model {
 //
 // Note: Do not commit or roll back the transaction in function f,
 // as it is automatically handled by this function.
-func (dao *TUserDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
+func (dao *FamliyDao) Transaction(ctx context.Context, f func(ctx context.Context, tx gdb.TX) error) (err error) {
 	return dao.Ctx(ctx).Transaction(ctx, f)
 }

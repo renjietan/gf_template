@@ -8,15 +8,15 @@ import (
 	"gf_template/internal/dao/internal"
 )
 
-// tUserDao is the data access object for the table t_user.
+// infoDao is the data access object for the table gf_info.
 // You can define custom methods on it to extend its functionality as needed.
-type tUserDao struct {
-	*internal.TUserDao
+type infoDao struct {
+	*internal.InfoDao
 }
 
 var (
-	// TUser is a globally accessible object for table t_user operations.
-	TUser = tUserDao{internal.NewTUserDao()}
+	// Info is a globally accessible object for table gf_info operations.
+	Info = infoDao{internal.NewInfoDao()}
 )
 
 // Add your custom methods and functionality below.

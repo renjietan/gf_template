@@ -8,15 +8,15 @@ import (
 	"gf_template/internal/dao/internal"
 )
 
-// fFamliyDao is the data access object for the table f_famliy.
+// userDao is the data access object for the table gf_user.
 // You can define custom methods on it to extend its functionality as needed.
-type fFamliyDao struct {
-	*internal.FFamliyDao
+type userDao struct {
+	*internal.UserDao
 }
 
 var (
-	// FFamliy is a globally accessible object for table f_famliy operations.
-	FFamliy = fFamliyDao{internal.NewFFamliyDao()}
+	// User is a globally accessible object for table gf_user operations.
+	User = userDao{internal.NewUserDao()}
 )
 
 // Add your custom methods and functionality below.
