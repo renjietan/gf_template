@@ -33,6 +33,26 @@ var Famliy = map[string]*gdb.TableField{
 		Extra:   "",
 		Comment: "",
 	},
+	"created_at": {
+		Index:   2,
+		Name:    "created_at",
+		Type:    "datetime",
+		Null:    true,
+		Key:     "",
+		Default: "CURRENT_TIMESTAMP",
+		Extra:   "DEFAULT_GENERATED",
+		Comment: "",
+	},
+	"updated_at": {
+		Index:   3,
+		Name:    "updated_at",
+		Type:    "datetime",
+		Null:    true,
+		Key:     "",
+		Default: "CURRENT_TIMESTAMP",
+		Extra:   "DEFAULT_GENERATED on update CURRENT_TIMESTAMP",
+		Comment: "",
+	},
 }
 
 // SetFamliyTableFields registers the table fields definition to the database instance.

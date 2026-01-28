@@ -10,9 +10,9 @@ import (
 
 // Info is the golang structure for table info.
 type Info struct {
-	Id       int         `json:"id"       orm:"id"        description:""`
-	Info     string      `json:"info"     orm:"info"      description:""`
-	DeleteAt int         `json:"deleteAt" orm:"delete_at" description:""`
-	CreateAt *gtime.Time `json:"createAt" orm:"create_at" description:""`
-	UpdateAt *gtime.Time `json:"updateAt" orm:"update_at" description:""`
+	Id        int         `json:"id"        orm:"id"         description:""`
+	Info      string      `json:"info"      orm:"info"       description:""`
+	DeleteAt  int         `json:"deleteAt"  orm:"delete_at"  description:""`
+	CreatedAt *gtime.Time `json:"createdAt" orm:"created_at" description:""`
+	UpdatedAt *gtime.Time `json:"updatedAt" orm:"updated_at" description:""`
 }

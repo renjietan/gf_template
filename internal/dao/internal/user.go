@@ -21,24 +21,24 @@ type UserDao struct {
 
 // UserColumns defines and stores column names for the table gf_user.
 type UserColumns struct {
-	Id       string //
-	Name     string //
-	FId      string //
-	DeleteAt string //
-	CreateAt string //
-	UpdateAt string //
-	InfoId   string //
+	Id        string //
+	Name      string //
+	FId       string //
+	DeleteAt  string //
+	CreatedAt string //
+	UpdatedAt string //
+	InfoId    string //
 }
 
 // userColumns holds the columns for the table gf_user.
 var userColumns = UserColumns{
-	Id:       "id",
-	Name:     "name",
-	FId:      "f_id",
-	DeleteAt: "delete_at",
-	CreateAt: "create_at",
-	UpdateAt: "update_at",
-	InfoId:   "infoId",
+	Id:        "id",
+	Name:      "name",
+	FId:       "f_id",
+	DeleteAt:  "delete_at",
+	CreatedAt: "created_at",
+	UpdatedAt: "updated_at",
+	InfoId:    "infoId",
 }
 
 // NewUserDao creates and returns a new DAO object for table data access.

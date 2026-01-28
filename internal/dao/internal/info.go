@@ -21,20 +21,20 @@ type InfoDao struct {
 
 // InfoColumns defines and stores column names for the table gf_info.
 type InfoColumns struct {
-	Id       string //
-	Info     string //
-	DeleteAt string //
-	CreateAt string //
-	UpdateAt string //
+	Id        string //
+	Info      string //
+	DeleteAt  string //
+	CreatedAt string //
+	UpdatedAt string //
 }
 
 // infoColumns holds the columns for the table gf_info.
 var infoColumns = InfoColumns{
-	Id:       "id",
-	Info:     "info",
-	DeleteAt: "delete_at",
-	CreateAt: "create_at",
-	UpdateAt: "update_at",
+	Id:        "id",
+	Info:      "info",
+	DeleteAt:  "delete_at",
+	CreatedAt: "created_at",
+	UpdatedAt: "updated_at",
 }
 
 // NewInfoDao creates and returns a new DAO object for table data access.

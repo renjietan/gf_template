@@ -11,10 +11,10 @@ import (
 
 // Info is the golang structure of table gf_info for DAO operations like Where/Data.
 type Info struct {
-	g.Meta   `orm:"table:gf_info, do:true"`
-	Id       any         //
-	Info     any         //
-	DeleteAt any         //
-	CreateAt *gtime.Time //
-	UpdateAt *gtime.Time //
+	g.Meta    `orm:"table:gf_info, do:true"`
+	Id        any         //
+	Info      any         //
+	DeleteAt  any         //
+	CreatedAt *gtime.Time //
+	UpdatedAt *gtime.Time //
 }

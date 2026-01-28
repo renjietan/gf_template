@@ -53,9 +53,9 @@ var User = map[string]*gdb.TableField{
 		Extra:   "",
 		Comment: "",
 	},
-	"create_at": {
+	"created_at": {
 		Index:   4,
-		Name:    "create_at",
+		Name:    "created_at",
 		Type:    "datetime",
 		Null:    true,
 		Key:     "",
@@ -63,9 +63,9 @@ var User = map[string]*gdb.TableField{
 		Extra:   "DEFAULT_GENERATED",
 		Comment: "",
 	},
-	"update_at": {
+	"updated_at": {
 		Index:   5,
-		Name:    "update_at",
+		Name:    "updated_at",
 		Type:    "datetime",
 		Null:    true,
 		Key:     "",
