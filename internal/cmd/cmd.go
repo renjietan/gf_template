@@ -2,9 +2,6 @@ package cmd
 
 import (
 	"context"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -13,7 +10,6 @@ import (
 
 	"gf_template/internal/consts"
 	"gf_template/internal/controller/user"
-	"gf_template/middlewave/interceptor"
 	"gf_template/middlewave/reponse"
 )
 
@@ -33,11 +29,6 @@ var (
 			// 3、开启 国际化 & 设置 默认语言
 			g.I18n().SetLanguage("zh-CN")
 
-			// 4、自定义 拦截器 中间件
-			interceptor.Init()           // 先初始化日志管理器
-			defer interceptor.Shutdown() // 程序退出时，确保关闭日志管理器
-			s.Use(interceptor.Logger)    // 日志中间件
-
 			// 5、处理程序响应对象及其错误。
 			s.Use(reponse.MiddlewareHandlerResponse)
 
@@ -52,8 +43,6 @@ var (
 				)
 			})
 			s.Run()
-			// 优雅关闭日志管理器
-			setupGracefulShutdown(s)
 			return nil
 		},
 	}
@@ -70,20 +59,6 @@ var (
     `,
 	}
 )
-
-func setupGracefulShutdown(s *ghttp.Server) {
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
-
-	go func() {
-		<-sigChan
-		g.Log().Info(context.Background(), "关闭日志处理器...")
-
-		// 关闭日志处理器
-		interceptor.Shutdown()
-		s.Shutdown()
-	}()
-}
 
 func init() {
 	if err := Main.AddCommand(Help); err != nil {

@@ -30,11 +30,6 @@ CREATE TABLE `gf_famliy`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of gf_famliy
--- ----------------------------
-INSERT INTO `gf_famliy` VALUES (1, 'fm_1', NULL, NULL);
-
--- ----------------------------
 -- Table structure for gf_info
 -- ----------------------------
 DROP TABLE IF EXISTS `gf_info`;
