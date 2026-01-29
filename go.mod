@@ -3,6 +3,7 @@ module gf_template
 go 1.23.0
 
 require (
+	github.com/forgoer/openssl v1.6.1 // 加密 解密
 	github.com/gogf/gf/contrib/drivers/mysql/v2 v2.9.6
 	github.com/gogf/gf/v2 v2.9.6
 )

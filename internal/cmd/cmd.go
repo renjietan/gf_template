@@ -22,9 +22,9 @@ var (
 			s := g.Server()
 			// 1、自定义 swagger 模板
 			s.SetSwaggerUITemplate(consts.SwaggerTpl)
-
+			var db_conf = g.Cfg().MustGet(ctx, "database.default").Map()
 			// 2、执行SQL时，打印SQL语句
-			g.DB().SetDebug(true)
+			g.DB().SetDebug(db_conf["debug"].(bool))
 
 			// 3、开启 国际化 & 设置 默认语言
 			g.I18n().SetLanguage("zh-CN")
@@ -54,7 +54,7 @@ var (
 		---------------------------------------------------------------------------------
 		启动服务
 		>> 所有服务  [go run main.go]   热编译  [gf run main.go]
-		>> HTTP服务  [go run main.go http]
+		>> Help帮助  [go run main.go help]
 		---------------------------------------------------------------------------------
     `,
 	}
