@@ -6,10 +6,12 @@ import (
 	"github.com/gogf/gf/v2/os/gctx"
 
 	"gf_template/internal/cmd"
+	"gf_template/internal/global"
 	_ "gf_template/internal/packed"
 )
 
 func main() {
 	var ctx = gctx.GetInitCtx()
+	global.Init(ctx)
 	cmd.Main.Run(ctx)
 }

@@ -75,7 +75,7 @@ func Register(c Cron) {
 
 	name := c.GetName()
 	if _, ok := crons.tasks[name]; ok {
-		Logger().Debugf(gctx.GetInitCtx(), "定时任务名称【%v】重复注册", name)
+		Logger().Debugf(gctx.GetInitCtx(), "定时任务名称【%v】被重复注册", name)
 		return
 	}
 
@@ -152,7 +152,7 @@ func StartALL(sysCron []*entity.SysCron) (err error) {
 		}
 	}
 
-	Logger().Debug(gctx.GetInitCtx(), "load cron success..")
+	Logger().Debug(gctx.GetInitCtx(), "StartAll: 启动任务成功")
 	return nil
 }
 
@@ -170,11 +170,13 @@ func RefreshStatus(sysCron *entity.SysCron) (err error) {
 
 // 停止单个任务
 func Stop(sysCron *entity.SysCron) (err error) {
-	cr := gcron.Search(GenCronSn(sysCron))
+	sn := GenCronSn(sysCron)
+	cr := gcron.Search(sn)
 	if cr == nil {
 		return
 	}
 	cr.Stop()
+	Logger().Debugf(gctx.GetInitCtx(), "\nStop: 定时任务【%v】被停止", sn)
 	return
 }
 
@@ -226,7 +228,6 @@ func Start(sysCron *entity.SysCron) (err error) {
 	}
 
 	c := gcron.Search(GenCronSn(sysCron))
-	g.Log().Info(gctx.GetInitCtx(), "\n定时任务====================", c, c == nil)
 	if c != nil {
 		c.Start()
 		return

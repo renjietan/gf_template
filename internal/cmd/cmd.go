@@ -4,13 +4,9 @@ import (
 	"context"
 
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
-	"github.com/gogf/gf/v2/os/gtime"
 
-	"gf_template/internal/consts"
-	"gf_template/internal/controller/user"
-	"gf_template/middlewave/reponse"
+	"gf_template/utility/simple"
 )
 
 var (
@@ -19,31 +15,35 @@ var (
 		Usage: "main",
 		Brief: "start http server",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
-			s := g.Server()
-			// 1、自定义 swagger 模板
-			s.SetSwaggerUITemplate(consts.SwaggerTpl)
-			var db_conf = g.Cfg().MustGet(ctx, "database.default").Map()
-			// 2、执行SQL时，打印SQL语句
-			g.DB().SetDebug(db_conf["debug"].(bool))
+			return All.Func(ctx, parser)
+		},
+	}
+	All = &gcmd.Command{
+		Name:        "全部服务",
+		Brief:       "开启全部服务",
+		Description: "用于启动所有服务器的命令输入项",
+		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
+			g.Log().Debug(ctx, "starting all server")
 
-			// 3、开启 国际化 & 设置 默认语言
-			g.I18n().SetLanguage("zh-CN")
+			// 需要启动的服务
+			var allServers = []*gcmd.Command{Http, Cron}
 
-			// 5、处理程序响应对象及其错误。
-			s.Use(reponse.MiddlewareHandlerResponse)
-
-			// 6、设置时区
-			timeZone := g.Cfg().MustGet(ctx, "system.timeZone").String()
-			if err := gtime.SetTimeZone(timeZone); err != nil {
-				g.Log().Fatalf(ctx, "时区设置异常 err: %+v", err)
+			for _, server := range allServers {
+				var cmd = server
+				simple.SafeGo(ctx, func(ctx context.Context) {
+					if err := cmd.Func(ctx, parser); err != nil {
+						g.Log().Fatalf(ctx, "%v 启动失败:%v", cmd.Name, err)
+					}
+				})
 			}
-			s.Group("/", func(group *ghttp.RouterGroup) {
-				group.Bind(
-					user.NewV1(),
-				)
-			})
-			s.Run()
-			return nil
+
+			// 信号监听
+			signalListen(ctx, signalHandlerForOverall)
+
+			<-serverCloseSignal
+			serverWg.Wait()
+			g.Log().Debug(ctx, "所有服务启动成功！")
+			return
 		},
 	}
 	Help = &gcmd.Command{
@@ -54,14 +54,17 @@ var (
 		---------------------------------------------------------------------------------
 		启动服务
 		>> 所有服务  [go run main.go]   热编译  [gf run main.go]
-		>> Help帮助  [go run main.go help]
+		>> HTTP服务  [go run main.go http]
+		>> 消息队列  [go run main.go queue]
+		>> 定时任务  [go run main.go cron]
+		>> 查看帮助  [go run main.go help]
 		---------------------------------------------------------------------------------
     `,
 	}
 )
 
 func init() {
-	if err := Main.AddCommand(Help); err != nil {
+	if err := Main.AddCommand(Help, Cron); err != nil {
 		panic(err)
 	}
 }

@@ -77,9 +77,16 @@ func GenExecuteFun(fun func(ctx context.Context, parser *Parser) (err error)) fu
 
 		milliseconds := gtime.Now().Sub(st).Milliseconds() // 执行耗时
 		if err != nil {
-			parser.Logger.Errorf(ctx, "execute failed, took %vms, err:%+v", milliseconds, err)
+			parser.Logger.Errorf(ctx, "执行失败, 耗时 %vms, 错误信息:%+v\n", milliseconds, err)
 			return
 		}
-		parser.Logger.Infof(ctx, "execute success, took %vms.", milliseconds)
+		parser.Logger.Infof(ctx, "执行成功, 耗时 %vms\n", milliseconds)
+	}
+}
+
+func GenTestCronEntity() entity.SysCron {
+	return entity.SysCron{
+		Id:   1,
+		Name: "测试定时任务",
 	}
 }

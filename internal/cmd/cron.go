@@ -8,32 +8,26 @@ import (
 	"gf_template/internal/library/cron"
 )
 
-var (
-	Cron = &gcmd.Command{
-		Name:        "cron",
-		Brief:       "定时任务，用来部署一些可独立运行的定时任务，通过tcp方式和后台保持长连接通讯，动态调整任务属性。",
-		Description: ``,
-		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
-			// 服务日志处理
-			cron.Logger().SetHandlers(global.LoggingServeLogHandler)
+var Cron = &gcmd.Command{
+	Name:        "cron",
+	Brief:       "定时任务",
+	Description: ``,
+	Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
+		// 服务日志处理
+		// cron.Logger().SetHandlers(global.LoggingServeLogHandler)
 
-			// 启动定时任务
-			service.SysCron().StartCron(ctx)
+		// 启动定时任务
+		// service.SysCron().StartCron(ctx)
+		serverWg.Add(1)
 
-			// tcp客户端
-			service.CronClient().Start(ctx)
+		// 信号监听
+		signalListen(ctx, signalHandlerForOverall)
 
-			serverWg.Add(1)
-
-			// 信号监听
-			signalListen(ctx, signalHandlerForOverall)
-
-			<-serverCloseSignal
-			service.CronClient().Stop(ctx)
-			cron.StopALL()
-			cron.Logger().Debug(ctx, "cron successfully closed ..")
-			serverWg.Done()
-			return
-		},
-	}
-)
+		// 收到 关闭信号，停止定时任务
+		<-serverCloseSignal
+		cron.StopALL()
+		cron.Logger().Debug(ctx, "\n收到 关闭信号, 定时任务已关闭")
+		serverWg.Done()
+		return
+	},
+}
