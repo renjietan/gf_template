@@ -95,7 +95,7 @@ func SafeGo(ctx context.Context, f func(ctx context.Context), lv ...int) {
 		if len(lv) > 0 {
 			level = lv[0]
 		}
-		Logf(level, ctx, "SafeGo exec failed:%+v", err)
+		Logf(level, ctx, "协程执行错误(SafeGo):%+v", err)
 	})
 }
 

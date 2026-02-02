@@ -11,9 +11,10 @@ gfcli:
 
   # dao生成
   gen:
-    dao:
+    dao:                                                                # 数据库生成实例类
       - link: "mysql:root:123456@tcp(127.0.0.1:3306)/gf_template"
-        group: "default"                                                # 分组 使用hotgo代码生成功能时必须填
+        # role: "master" | "slave1" | "slave2"                          # 分库时用到的角色名
+        group: "default"                                                # 分组
         # tables: ""                                                    # 指定当前数据库中需要执行代码生成的数据表。如果为空，表示数据库的所有表都会生成。
         tablesEx: "hg_sys_addons_install"                               # 指定当前数据库中需要排除代码生成的数据表。
         removePrefix: "gf_"
@@ -22,8 +23,8 @@ gfcli:
         jsonCase: "CamelLower"
         gJsonSupport: true
         clear: false                                                    # 自动删除数据库中不存在对应数据表的本地 dao/do/entity 代码文件。谨慎使用！
-        genTable: true                                                  # 用于控制是否生成数据库表字段定义文件
-        overwriteDao: true                                              # 每次生成 dao 代码时是否重新生成覆盖 dao/internal 目录外层的文件
+        genTable: false                                                  # 用于控制是否生成数据库表字段定义文件
+        overwriteDao: false                                             # 每次生成 dao 代码时是否重新生成覆盖 dao/internal 目录外层的文件
         # shardingPattern:                                              # 分库分表
         #   - "users_?"
         #   - "orders_?"

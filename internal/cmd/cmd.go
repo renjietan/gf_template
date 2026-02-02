@@ -13,7 +13,7 @@ var (
 	Main = &gcmd.Command{
 		Name:  "main",
 		Usage: "main",
-		Brief: "start http server",
+		Brief: "开启主服务，与 ALL类似",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 			return All.Func(ctx, parser)
 		},
@@ -23,7 +23,7 @@ var (
 		Brief:       "开启全部服务",
 		Description: "用于启动所有服务器的命令输入项",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
-			g.Log().Debug(ctx, "starting all server")
+			g.Log().Debug(ctx, "\n======================= 所有服务 ==========================")
 
 			// 需要启动的服务
 			var allServers = []*gcmd.Command{Http, Cron}

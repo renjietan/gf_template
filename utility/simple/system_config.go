@@ -21,7 +21,7 @@ func IsDemo(ctx context.Context) bool {
 	return g.Cfg().MustGet(ctx, "system.isDemo", true).Bool()
 }
 
-// IsCluster 是否为集群部署
-func IsCluster(ctx context.Context) bool {
-	return g.Cfg().MustGet(ctx, "system.isCluster", true).Bool()
+// TimeZone
+func TimeZone(ctx context.Context) string {
+	return g.Cfg().MustGet(ctx, "system.timeZone", "Asia/Shanghai").String()
 }

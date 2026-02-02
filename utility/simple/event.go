@@ -14,7 +14,7 @@ type sEvent struct {
 
 var event *sEvent
 
-// Event 事件实例
+// 初始化
 func Event() *sEvent {
 	if event == nil {
 		event = &sEvent{
@@ -24,14 +24,14 @@ func Event() *sEvent {
 	return event
 }
 
-// Register 往一个分组中注册事件
+// 往一个分组中注册事件
 func (e *sEvent) Register(group string, callback EventFunc) {
 	e.Lock()
 	defer e.Unlock()
 	e.list[group] = append(e.list[group], callback)
 }
 
-// Call 回调一个分组的事件
+// 回调一个分组的事件
 func (e *sEvent) Call(group string, ctx context.Context, args ...interface{}) {
 	if events, ok := e.list[group]; ok {
 		for _, f := range events {
@@ -40,12 +40,12 @@ func (e *sEvent) Call(group string, ctx context.Context, args ...interface{}) {
 	}
 }
 
-// Remove 移动一个分组的事件
+// 删除一个分组的事件
 func (e *sEvent) Remove(group string) {
 	delete(e.list, group)
 }
 
-// Clear 清空事件列表
+// 清空事件列表
 func (e *sEvent) Clear() {
 	e.list = make(map[string][]EventFunc)
 }
