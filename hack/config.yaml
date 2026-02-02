@@ -22,8 +22,10 @@ gfcli:
         noModelComment: true                                            # 用于指定是否关闭数据模型结构体属性的注释自动生成，内容为数据表对应字段的注释。
         jsonCase: "CamelLower"
         gJsonSupport: true
+
+        ### 注意！！！
         clear: false                                                    # 自动删除数据库中不存在对应数据表的本地 dao/do/entity 代码文件。谨慎使用！
-        genTable: false                                                  # 用于控制是否生成数据库表字段定义文件
+        genTable: false                                                 # 用于控制是否生成数据库表字段定义文件
         overwriteDao: false                                             # 每次生成 dao 代码时是否重新生成覆盖 dao/internal 目录外层的文件
         # shardingPattern:                                              # 分库分表
         #   - "users_?"

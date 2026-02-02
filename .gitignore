@@ -11,9 +11,12 @@ bin/
 gf
 main
 *.exe
+*.exe*
 output/
 manifest/output/
 temp/
 temp.yaml
 bin
 *.log
+storage/
+logs/
