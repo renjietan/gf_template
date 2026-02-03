@@ -6,7 +6,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
-	"github.com/gogf/gf/v2/os/gtime"
 
 	"gf_template/internal/consts"
 	"gf_template/internal/controller/user"
@@ -31,11 +30,6 @@ var Http = &gcmd.Command{
 		// 5、处理程序响应对象及其错误。
 		s.Use(reponse.MiddlewareHandlerResponse)
 
-		// 6、设置时区
-		timeZone := g.Cfg().MustGet(ctx, "system.timeZone").String()
-		if err := gtime.SetTimeZone(timeZone); err != nil {
-			g.Log().Fatalf(ctx, "时区设置异常 err: %+v", err)
-		}
 		s.Group("/", func(group *ghttp.RouterGroup) {
 			group.Bind(
 				user.NewV1(),

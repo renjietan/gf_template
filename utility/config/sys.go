@@ -1,4 +1,4 @@
-package simple
+package sysconfig
 
 import (
 	"context"
@@ -22,6 +22,21 @@ func IsDemo(ctx context.Context) bool {
 }
 
 // TimeZone
-func TimeZone(ctx context.Context) string {
+func GetTimeZone(ctx context.Context) string {
 	return g.Cfg().MustGet(ctx, "system.timeZone", "Asia/Shanghai").String()
+}
+
+// mode 获取运行模式
+func GetMode(ctx context.Context) string {
+	return g.Cfg().MustGet(ctx, "system.mode", "not-set").String()
+}
+
+// GetLanguage 获取系统默认语言
+func GetLanguage(ctx context.Context) string {
+	return g.Cfg().MustGet(ctx, "system.i18n.defaultLanguage", "zh-CN").String()
+}
+
+// mode 获取运行模式
+func GetLangSwitch(ctx context.Context) bool {
+	return g.Cfg().MustGet(ctx, "system.i18n.switch", true).Bool()
 }

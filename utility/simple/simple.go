@@ -12,6 +12,7 @@ import (
 	"github.com/gogf/gf/v2/os/glog"
 
 	"gf_template/internal/consts"
+	sysconfig "gf_template/utility/config"
 	"gf_template/utility/encrypt"
 )
 
@@ -57,9 +58,9 @@ func CheckPassword(input, salt, hash string) (err error) {
 // GetHeaderLocale 获取请求头语言设置
 // gf支持格式：en/ja/ru/zh-CN/zh-TW
 func GetHeaderLocale(ctx context.Context) (lang string) {
-	lang = g.Cfg().MustGet(ctx, "system.i18n.defaultLanguage", consts.SysDefaultLanguage).String()
+	lang = sysconfig.GetLanguage(ctx)
 	// 没有开启国际化，使用默认语言
-	if !g.Cfg().MustGet(ctx, "system.i18n.switch", true).Bool() {
+	if sysconfig.GetLangSwitch(ctx) == false {
 		return
 	}
 
@@ -99,6 +100,7 @@ func SafeGo(ctx context.Context, f func(ctx context.Context), lv ...int) {
 	})
 }
 
+// Logf 根据日志级别输出日志：主要为SafeGo使用
 func Logf(level int, ctx context.Context, format string, v ...interface{}) {
 	switch level {
 	case glog.LEVEL_DEBU:
