@@ -12,14 +12,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
+	"time"
+
 	"github.com/gogf/gf/v2/container/gvar"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gcache"
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/util/gconv"
-	"os"
-	"path/filepath"
-	"time"
 )
 
 type (
@@ -37,7 +38,7 @@ type (
 const perm = 0o666
 
 var (
-	CacheExpiredErr = errors.New("cache expired")
+	CacheExpiredErr = errors.New("缓存过期")
 )
 
 // NewAdapterFile creates and returns a new memory cache object.
@@ -56,19 +57,19 @@ func (c *AdapterFile) Set(ctx context.Context, key interface{}, value interface{
 }
 
 func (c *AdapterFile) SetMap(ctx context.Context, data map[interface{}]interface{}, duration time.Duration) (err error) {
-	return gerror.New("implement me")
+	return gerror.New("暂未实现")
 }
 
 func (c *AdapterFile) SetIfNotExist(ctx context.Context, key interface{}, value interface{}, duration time.Duration) (ok bool, err error) {
-	return false, gerror.New("implement me")
+	return false, gerror.New("暂未实现")
 }
 
 func (c *AdapterFile) SetIfNotExistFunc(ctx context.Context, key interface{}, f gcache.Func, duration time.Duration) (ok bool, err error) {
-	return false, gerror.New("implement me")
+	return false, gerror.New("暂未实现")
 }
 
 func (c *AdapterFile) SetIfNotExistFuncLock(ctx context.Context, key interface{}, f gcache.Func, duration time.Duration) (ok bool, err error) {
-	return false, gerror.New("implement me")
+	return false, gerror.New("暂未实现")
 }
 
 func (c *AdapterFile) Get(ctx context.Context, key interface{}) (*gvar.Var, error) {
@@ -122,19 +123,24 @@ func (c *AdapterFile) Size(ctx context.Context) (size int, err error) {
 }
 
 func (c *AdapterFile) Data(ctx context.Context) (data map[interface{}]interface{}, err error) {
-	return nil, gerror.New("implement me")
+	df, _ := os.Open(c.dir)
+	files, err := df.ReadDir(-1)
+	for _, v := range files {
+		v.Name()
+	}
+	return nil, gerror.New("暂未实现")
 }
 
 func (c *AdapterFile) Keys(ctx context.Context) (keys []interface{}, err error) {
-	return nil, gerror.New("implement me")
+	return nil, gerror.New("暂未实现")
 }
 
 func (c *AdapterFile) Values(ctx context.Context) (values []interface{}, err error) {
-	return nil, gerror.New("implement me")
+	return nil, gerror.New("暂未实现")
 }
 
 func (c *AdapterFile) Update(ctx context.Context, key interface{}, value interface{}) (oldValue *gvar.Var, exist bool, err error) {
-	return nil, false, gerror.New("implement me")
+	return nil, false, gerror.New("暂未实现")
 }
 
 func (c *AdapterFile) UpdateExpire(ctx context.Context, key interface{}, duration time.Duration) (oldDuration time.Duration, err error) {
@@ -305,7 +311,6 @@ func (c *AdapterFile) Flush() error {
 // Save a value in File storage by key
 func (c *AdapterFile) Save(key string, value string, lifeTime time.Duration) error {
 	duration := int64(0)
-
 	if lifeTime > 0 {
 		duration = time.Now().Unix() + int64(lifeTime.Seconds())
 	}

@@ -7,9 +7,9 @@ import (
 )
 
 func GetCacheAdapter(ctx context.Context) string {
-	return g.Cfg().MustGet(ctx, "system.cache.adapter").String()
+	return g.Cfg().MustGet(ctx, "cache.adapter").String()
 }
 
 func GetCacheFileDir(ctx context.Context) string {
-	return g.Cfg().MustGet(ctx, "system.cache.fileDir").String()
+	return g.Cfg().MustGet(ctx, "cache.fileDir").String()
 }

@@ -20,7 +20,7 @@ import (
 
 func Init(ctx context.Context) {
 	g.Cfg().GetAdapter().(*gcfg.AdapterFile).SetFileName("development")
-	// cache.Instance().Set(ctx, "gf_template_user_id", "1111111", 0)
+
 	mode := sysconfig.GetMode(ctx)
 	fmt.Printf("当前运行环境: %v, 当前运行模式: %v 运行根路径为: %v  gf版本: %v \n", runtime.GOOS, mode, gfile.Pwd(), gf.VERSION)
 	if mode != gmode.DEVELOP && mode != gmode.NOT_SET {
@@ -41,7 +41,14 @@ func Init(ctx context.Context) {
 	// 设置缓存适配器
 	cache.SetAdapter(ctx)
 
-	// // 初始化功能库配置
+	// cache.Instance().Set(ctx, "cache_key", 1111111, 300*time.Second)
+	// cache.Instance().GetAdapter().Set(ctx, "cache_key2", 22222222, 300*time.Second)
+	data1, err := cache.Instance().Data(ctx)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("data1:", data1)
+
 	// service.SysConfig().InitConfig(ctx)
 
 	// // 加载超管数据

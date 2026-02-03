@@ -25,20 +25,19 @@ func Instance() *gcache.Cache {
 // SetAdapter 设置缓存适配器
 func SetAdapter(ctx context.Context) {
 	var adapter gcache.Adapter
-
 	switch sysconfig.GetCacheAdapter(ctx) {
 	case "redis":
 		adapter = gcache.NewAdapterRedis(g.Redis())
 	case "file":
 		fileDir := sysconfig.GetCacheFileDir(ctx)
 		if fileDir == "" {
-			g.Log().Fatal(ctx, "cache file 路径未配置")
+			g.Log().Fatal(ctx, "缓存文件夹路径未配置")
 			return
 		}
 
 		if !gfile.Exists(fileDir) {
 			if err := gfile.Mkdir(fileDir); err != nil {
-				g.Log().Fatalf(ctx, "cache file 路径不存在, err:%+v", err)
+				g.Log().Fatalf(ctx, "缓存文件夹创建失败, err:%+v", err)
 				return
 			}
 		}
