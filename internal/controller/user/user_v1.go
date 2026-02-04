@@ -55,7 +55,10 @@ func (c *ControllerV1) Create(ctx context.Context, req *v1.CreateReq) (res *v1.C
 }
 
 func (c *ControllerV1) Delete(ctx context.Context, req *v1.DeleteReq) (res *v1.DeleteRes, err error) {
-	_, err = dao.User.Ctx(ctx).Data("delete = 1").Where("id = ?", req.Id).Update()
+	// _, err = dao.User.Ctx(ctx).Data(g.Map{
+	// 	"'delete'": 1,
+	// }).Where("id = ?", req.Id).Update()
+	_, err = dao.User.Ctx(ctx).Where("id = ?", req.Id).Delete()
 	return
 }
 
