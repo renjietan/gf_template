@@ -2,13 +2,14 @@ package user
 
 import (
 	"context"
-	v1 "gf_template/api/user/v1"
-	"gf_template/internal/dao"
-	"gf_template/internal/model/entity"
 
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
+
+	v1 "gf_template/api/user/v1"
+	"gf_template/internal/dao"
+	"gf_template/internal/model/entity"
 )
 
 func (c *ControllerV1) GetList(ctx context.Context, req *v1.PagerReq) (res *v1.PagerRes, err error) {
@@ -54,7 +55,7 @@ func (c *ControllerV1) Create(ctx context.Context, req *v1.CreateReq) (res *v1.C
 }
 
 func (c *ControllerV1) Delete(ctx context.Context, req *v1.DeleteReq) (res *v1.DeleteRes, err error) {
-	_, err = dao.User.Ctx(ctx).Delete("id = ", req.Id)
+	_, err = dao.User.Ctx(ctx).Data("delete = 1").Where("id = ?", req.Id).Update()
 	return
 }
 

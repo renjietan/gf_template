@@ -26,7 +26,7 @@ gfcli:
         ### 注意！！！
         clear: false                                                    # 自动删除数据库中不存在对应数据表的本地 dao/do/entity 代码文件。谨慎使用！
         genTable: false                                                 # 用于控制是否生成数据库表字段定义文件
-        overwriteDao: false                                             # 每次生成 dao 代码时是否重新生成覆盖 dao/internal 目录外层的文件
+        overwriteDao: true                                             # 每次生成 dao 代码时是否重新生成覆盖 dao/internal 目录外层的文件
         # shardingPattern:                                              # 分库分表
         #   - "users_?"
         #   - "orders_?"

@@ -24,7 +24,6 @@ import (
 )
 
 type (
-	// AdapterFile is the gcache adapter implements using file server.
 	AdapterFile struct {
 		dir string
 	}

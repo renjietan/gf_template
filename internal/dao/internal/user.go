@@ -28,6 +28,7 @@ type UserColumns struct {
 	CreatedAt string //
 	UpdatedAt string //
 	InfoId    string //
+	Delete    string // 删除标识
 }
 
 // userColumns holds the columns for the table gf_user.
@@ -39,6 +40,7 @@ var userColumns = UserColumns{
 	CreatedAt: "created_at",
 	UpdatedAt: "updated_at",
 	InfoId:    "infoId",
+	Delete:    "delete",
 }
 
 // NewUserDao creates and returns a new DAO object for table data access.

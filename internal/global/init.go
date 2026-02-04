@@ -19,8 +19,17 @@ import (
 )
 
 func Init(ctx context.Context) {
+	// 默认使用开发环境配置文件
 	g.Cfg().GetAdapter().(*gcfg.AdapterFile).SetFileName("development")
 
+	// 设置数据库调试模式
+	var db_conf = g.Cfg().MustGet(ctx, "database.default").Map()
+	g.DB().SetDebug(db_conf["debug"].(bool))
+
+	// 设置默认语言
+	g.I18n().SetLanguage(sysconfig.GetLanguage(ctx))
+
+	// 根据运行模式，重置默认的开发环境配置文件
 	mode := sysconfig.GetMode(ctx)
 	fmt.Printf("当前运行环境: %v, 当前运行模式: %v 运行根路径为: %v  gf版本: %v \n", runtime.GOOS, mode, gfile.Pwd(), gf.VERSION)
 	if mode != gmode.DEVELOP && mode != gmode.NOT_SET {
@@ -32,30 +41,16 @@ func Init(ctx context.Context) {
 
 	// 设置服务日志处理
 	glog.SetDefaultHandler(LoggingServeLogHandler)
+
 	// 默认上海时区
 	timezone := sysconfig.GetTimeZone(ctx)
 	if err := gtime.SetTimeZone(timezone); err != nil {
 		g.Log().Fatalf(ctx, "时区设置异常 err: %+v", err)
 		return
 	}
-	// 设置缓存适配器
+
+	// 初始化，并设置缓存适配器
 	cache.SetAdapter(ctx)
-
-	// cache.Instance().Set(ctx, "cache_key", 1111111, 300*time.Second)
-	// cache.Instance().GetAdapter().Set(ctx, "cache_key2", 22222222, 300*time.Second)
-	data1, err := cache.Instance().Data(ctx)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("data1:", data1)
-
-	// service.SysConfig().InitConfig(ctx)
-
-	// // 加载超管数据
-	// service.AdminMember().LoadSuperAdmin(ctx)
-
-	// // 订阅集群同步
-	// SubscribeClusterSync(ctx)
 }
 
 // LoggingServeLogHandler 服务日志处理

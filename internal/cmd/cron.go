@@ -5,6 +5,7 @@ import (
 
 	"github.com/gogf/gf/v2/os/gcmd"
 
+	"gf_template/internal/global"
 	"gf_template/internal/library/cron"
 )
 
@@ -14,7 +15,7 @@ var Cron = &gcmd.Command{
 	Description: ``,
 	Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 		// 服务日志处理
-		// cron.Logger().SetHandlers(global.LoggingServeLogHandler)
+		cron.Logger().SetHandlers(global.LoggingServeLogHandler)
 
 		// 启动定时任务
 		// service.SysCron().StartCron(ctx)

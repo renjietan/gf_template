@@ -243,3 +243,5 @@ database:
     link: "mysql:root:123456@tcp(127.0.0.1:3306)/gf_template?loc=Local&parseTime=true&charset=utf8mb4"
     debug: true
     Prefix: "gf_"
+    charset: "utf8mb4"
+    # dryRun: true                                # 开启后所有的写操作都会被打印但不会真正执行。默认为false

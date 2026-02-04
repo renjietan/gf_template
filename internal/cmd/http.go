@@ -18,18 +18,13 @@ var Http = &gcmd.Command{
 	Brief: "HTTP服务，也可以称为主服务，包含http、websocket、tcpserver多个可对外服务",
 	Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 		s := g.Server()
-		// 1、自定义 swagger 模板
+		// 自定义 swagger 模板
 		s.SetSwaggerUITemplate(consts.SwaggerTpl)
-		var db_conf = g.Cfg().MustGet(ctx, "database.default").Map()
-		// 2、执行SQL时，打印SQL语句
-		g.DB().SetDebug(db_conf["debug"].(bool))
 
-		// 3、开启 国际化 & 设置 默认语言
-		g.I18n().SetLanguage("zh-CN")
-
-		// 5、处理程序响应对象及其错误。
+		// 处理程序响应对象及其错误。
 		s.Use(reponse.MiddlewareHandlerResponse)
 
+		// TODO: 需要单独管理
 		s.Group("/", func(group *ghttp.RouterGroup) {
 			group.Bind(
 				user.NewV1(),

@@ -18,13 +18,13 @@ var (
 	once              sync.Once
 )
 
-// 关闭信号处理
+// 发送关闭信号，触发Event关闭事件
 func signalHandlerForOverall(sig os.Signal) {
 	serverCloseEvent(gctx.GetInitCtx())
 	serverCloseSignal <- struct{}{}
 }
 
-// 信号监听
+// 信号监听: 监听进程退出信号
 func signalListen(ctx context.Context, handler ...gproc.SigHandler) {
 	simple.SafeGo(ctx, func(ctx context.Context) {
 		gproc.AddSigHandlerShutdown(handler...)

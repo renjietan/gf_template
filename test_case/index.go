@@ -1,42 +1,29 @@
 package main
 
 import (
-	"context"
+	"encoding/json"
 	"fmt"
 
-	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/gcmd"
-	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/gogf/gf/v2/util/gconv"
 )
 
-type cMain struct {
-	g.Meta `name:"main"`
-}
-
-type cMainHttpInput struct {
-	g.Meta `name:"http" brief:"start http server"`
-}
-type cMainHttpOutput struct{}
-
-type cMainGrpcInput struct {
-	g.Meta `name:"grpc" brief:"start grpc server"`
-}
-type cMainGrpcOutput struct{}
-
-func (c *cMain) Http(ctx context.Context, in cMainHttpInput) (out *cMainHttpOutput, err error) {
-	fmt.Println("start http server")
-	return
-}
-
-func (c *cMain) Grpc(ctx context.Context, in cMainGrpcInput) (out *cMainGrpcOutput, err error) {
-	fmt.Println("start grpc server")
-	return
-}
-
 func main() {
-	cmd, err := gcmd.NewFromObject(cMain{})
-	if err != nil {
-		panic(err)
+	var m = map[any]any{
+		"one":   "uno",
+		"two":   "dos",
+		"three": "tres",
 	}
-	cmd.Run(gctx.New())
+	var m_string, err = json.Marshal(m)
+	if err != nil {
+		fmt.Println("Error marshaling map:", err)
+		return
+	}
+	fmt.Println(gconv.String(m_string))
+	var m2 = map[string]string{
+		"one":   "1",
+		"two":   "2",
+		"three": "3",
+	}
+	json.Unmarshal(m_string, &m2)
+	fmt.Println(m2)
 }
