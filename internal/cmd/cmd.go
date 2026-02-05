@@ -15,6 +15,7 @@ var (
 		Usage: "main",
 		Brief: "开启主服务，与 ALL类似",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
+			g.Log().Debug(ctx, "参数:", gcmd.GetArgAll())
 			return All.Func(ctx, parser)
 		},
 	}
@@ -42,7 +43,6 @@ var (
 
 			<-serverCloseSignal
 			serverWg.Wait()
-			g.Log().Debug(ctx, "所有服务启动成功！")
 			return
 		},
 	}
@@ -64,7 +64,7 @@ var (
 )
 
 func init() {
-	if err := Main.AddCommand(Help, Cron); err != nil {
+	if err := Main.AddCommand(Help, Http, Cron); err != nil {
 		panic(err)
 	}
 }

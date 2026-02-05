@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/gogf/gf/v2/os/gcmd"
 
@@ -20,7 +21,7 @@ var Cron = &gcmd.Command{
 		// 启动定时任务
 		// service.SysCron().StartCron(ctx)
 		serverWg.Add(1)
-
+		fmt.Println("======================= 开启定时任务 ==========================")
 		// 信号监听
 		signalListen(ctx, signalHandlerForOverall)
 

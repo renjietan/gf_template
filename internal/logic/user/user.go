@@ -1,16 +1,18 @@
-package logic
+package user
 
 import (
 	"context"
+	"demo/internal/dao"
+	"demo/internal/model/entity"
 
 	"github.com/gogf/gf/v2/database/gdb"
 
 	v1 "gf_template/api/user/v1"
-	"gf_template/internal/dao"
-	"gf_template/internal/model/entity"
 )
 
-func GetList(ctx context.Context, req *v1.PagerReq) (res *v1.PagerRes, err error) {
+type sUser struct{} // 结构体名以 's' 开头
+
+func (s *sUser) GetList(ctx context.Context, req *v1.PagerReq) (res *v1.PagerRes, err error) {
 	res = &v1.PagerRes{}
 	totalInt := int(res.Total)
 	totalIntPtr := &totalInt

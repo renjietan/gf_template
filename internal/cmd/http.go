@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -15,7 +16,7 @@ import (
 var Http = &gcmd.Command{
 	Name:  "http",
 	Usage: "http",
-	Brief: "HTTP服务，也可以称为主服务，包含http、websocket、tcpserver多个可对外服务",
+	Brief: "HTTP",
 	Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 		s := g.Server()
 		// 自定义 swagger 模板
@@ -31,7 +32,7 @@ var Http = &gcmd.Command{
 			)
 		})
 		serverWg.Add(1)
-
+		fmt.Println("======================= 开启HTTP ==========================")
 		// 信号监听
 		signalListen(ctx, signalHandlerForOverall)
 

@@ -58,7 +58,8 @@ func (c *ControllerV1) Delete(ctx context.Context, req *v1.DeleteReq) (res *v1.D
 	// _, err = dao.User.Ctx(ctx).Data(g.Map{
 	// 	"'delete'": 1,
 	// }).Where("id = ?", req.Id).Update()
-	_, err = dao.User.Ctx(ctx).Where("id = ?", req.Id).Delete()
+	// _, err = dao.User.Ctx(ctx).Where("id = ?", req.Id).Delete()
+	_, err = dao.User.Ctx(ctx).Delete("id", req.Id)
 	return
 }
 
