@@ -11,7 +11,7 @@
  Target Server Version : 80030 (8.0.30)
  File Encoding         : 65001
 
- Date: 29/01/2026 01:31:05
+ Date: 08/02/2026 21:20:11
 */
 
 SET NAMES utf8mb4;
@@ -41,11 +41,7 @@ CREATE TABLE `gf_info`  (
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id` DESC) USING BTREE,
   CONSTRAINT `gf_info_chk_1` CHECK (`delete_at` in (0,1))
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of gf_info
--- ----------------------------
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for gf_sys_cron
@@ -69,10 +65,6 @@ CREATE TABLE `gf_sys_cron`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统_定时任务' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of gf_sys_cron
--- ----------------------------
-
--- ----------------------------
 -- Table structure for gf_sys_cron_group
 -- ----------------------------
 DROP TABLE IF EXISTS `gf_sys_cron_group`;
@@ -90,10 +82,6 @@ CREATE TABLE `gf_sys_cron_group`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统_定时任务分组' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of gf_sys_cron_group
--- ----------------------------
-
--- ----------------------------
 -- Table structure for gf_user
 -- ----------------------------
 DROP TABLE IF EXISTS `gf_user`;
@@ -101,7 +89,7 @@ CREATE TABLE `gf_user`  (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `f_id` int NOT NULL,
-  `delete_at` int NOT NULL DEFAULT 0,
+  `delete_at` datetime NULL DEFAULT NULL,
   `created_at` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `infoId` int NULL DEFAULT NULL,
@@ -109,12 +97,7 @@ CREATE TABLE `gf_user`  (
   INDEX `f_id`(`f_id` ASC) USING BTREE,
   INDEX `info_id`(`infoId` ASC) USING BTREE,
   CONSTRAINT `f_id` FOREIGN KEY (`f_id`) REFERENCES `gf_famliy` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `info_id` FOREIGN KEY (`infoId`) REFERENCES `gf_info` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `delete_at` CHECK (`delete_at` in (0,1))
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of gf_user
--- ----------------------------
+  CONSTRAINT `info_id` FOREIGN KEY (`infoId`) REFERENCES `gf_info` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
