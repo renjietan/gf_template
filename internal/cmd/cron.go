@@ -17,9 +17,8 @@ var Cron = &gcmd.Command{
 	Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
 		// 服务日志处理
 		cron.Logger().SetHandlers(global.LoggingServeLogHandler)
-
+		// test.TestCron()
 		// 启动定时任务
-		// service.SysCron().StartCron(ctx)
 		serverWg.Add(1)
 		fmt.Println("======================= 开启定时任务 ==========================")
 		// 信号监听

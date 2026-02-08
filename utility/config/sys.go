@@ -16,11 +16,6 @@ func Debug(ctx context.Context) bool {
 	return g.Cfg().MustGet(ctx, "system.debug", true).Bool()
 }
 
-// IsDemo 是否为演示系统
-func IsDemo(ctx context.Context) bool {
-	return g.Cfg().MustGet(ctx, "system.isDemo", true).Bool()
-}
-
 // TimeZone
 func GetTimeZone(ctx context.Context) string {
 	return g.Cfg().MustGet(ctx, "system.timeZone", "Asia/Shanghai").String()
@@ -40,3 +35,5 @@ func GetLanguage(ctx context.Context) string {
 func GetLangSwitch(ctx context.Context) bool {
 	return g.Cfg().MustGet(ctx, "system.i18n.switch", true).Bool()
 }
+
+//

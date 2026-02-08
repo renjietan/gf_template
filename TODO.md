@@ -1,1 +1,2 @@
-- 分离 service + logic
+- shutdown + reset + 停止定时器
+- 路由分离

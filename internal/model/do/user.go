@@ -15,9 +15,8 @@ type User struct {
 	Id        any         //
 	Name      any         //
 	FId       any         //
-	DeleteAt  any         //
+	DeleteAt  *gtime.Time //
 	CreatedAt *gtime.Time //
 	UpdatedAt *gtime.Time //
 	InfoId    any         //
-	Delete    any         // 删除标识
 }

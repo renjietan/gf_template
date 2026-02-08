@@ -20,3 +20,4 @@ bin
 *.log
 storage/
 logs/
+*.profile

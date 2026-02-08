@@ -17,7 +17,7 @@ var cache *gcache.Cache
 // Instance 缓存实例
 func Instance() *gcache.Cache {
 	if cache == nil {
-		panic("cache uninitialized.")
+		panic("缓存未初始化")
 	}
 	return cache
 }

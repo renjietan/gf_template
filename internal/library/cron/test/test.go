@@ -2,7 +2,6 @@ package test
 
 import (
 	"context"
-	"time"
 
 	"github.com/gogf/gf/v2/frame/g"
 
@@ -11,7 +10,7 @@ import (
 	"gf_template/internal/model/entity"
 )
 
-func init() {
+func TestCron() {
 	cron.Register(cron_t)
 	cron.Start(&entity.SysCron{
 		Name:    "test",
@@ -19,13 +18,13 @@ func init() {
 		Pattern: "*/3 * * * * *",
 		Policy:  int64(consts.CronPolicySame),
 	})
-	time.Sleep(15 * time.Second)
-	cron.Stop(&entity.SysCron{
-		Name:    "test",
-		Id:      1,
-		Pattern: "*/3 * * * * *",
-		Policy:  int64(consts.CronPolicySame),
-	})
+	// time.Sleep(15 * time.Second)
+	// cron.Stop(&entity.SysCron{
+	// 	Name:    "test",
+	// 	Id:      1,
+	// 	Pattern: "*/3 * * * * *",
+	// 	Policy:  int64(consts.CronPolicySame),
+	// })
 }
 
 var cron_t = &cronT{Name: "test", Id: 1}

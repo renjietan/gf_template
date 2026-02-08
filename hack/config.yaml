@@ -1,38 +1,75 @@
 # CLI tool, only in development environment.
 # https://goframe.org/docs/cli
 gfcli:
+  run:
+    path: "./bin/development"
+    extra: ""
+    args: ""
+    watchPaths:
+      - api/*.go
+      - internal/controller/*.go
   # 工具编译配置
   build:
+    # 生成的可执行文件名称。如果是 windows 平台，那么默认会加上 .exe 后缀
     name: "gf_template"
+    # 程序版本，如果指定版本信息，那么程序生成的路径中会多一层以版本名称的目录
+    version: "v1.0.0"
+    # 当前系统架构
     arch: "amd64"
+    # 编译平台，多个以 , 号分隔，如果是 all 表示编译所有支持平台
     system: "linux,darwin,windows"
+    # 编译可执行文件存储的 目录地址
+    path: "./bin/production"
+    # 同 go build -mod 编译选项
     mod: ""
+    # 是否开启 CGO，默认是关闭的。如果开启，那么交叉编译可能会有问题
     cgo: 0
+    # 需要打包的目录
+    # packSrc: "public,template,manifest"
+    # 打包后生成的 Go 文件路径，一般使用相对路径指定到本项目目录中
+    # packDst: "internal/packed/build_pack_data.go"
+    ## 输出的可执行文件路径，当该参数指定时， name 和 path 参数失效，常用于编译单个可执行文件。
+    # output: "./bin/gf_template.exe"
+    ## 额外自定义的编译参数，会直接传递给 go build 命令
+    # extra: ""
+    ## 自定义的内置变量键值对，构建的二进制中可以通过 gbuild 包获取编译信息。
+    # varMap: "<br />gfcli:<br /> build:<br /> name: "gf"<br /> arch: "all"<br /> system: "all"<br /> mod: "none"<br /> cgo: 0<br /> varMap:<br /> k1: v1<br /> k2: v2<br />"
+    ## 当编译发生错误时，立即停止后续执行，并退出编译流程（使用 os.Exit(1)）
+    exitWhenError: true
+    # 每次编译之前在终端打印当前编译环境的环境变量信息
+    dumpEnv: true
 
   # dao生成
   gen:
-    dao:                                                                # 数据库生成实例类
+    dao: # 数据库生成实例类
       - link: "mysql:root:123456@tcp(127.0.0.1:3306)/gf_template"
         # role: "master" | "slave1" | "slave2"                          # 分库时用到的角色名
-        group: "default"                                                # 分组
+        group: "default" # 分组
         # tables: ""                                                    # 指定当前数据库中需要执行代码生成的数据表。如果为空，表示数据库的所有表都会生成。
-        tablesEx: "hg_sys_addons_install"                               # 指定当前数据库中需要排除代码生成的数据表。
+        tablesEx: "hg_sys_addons_install" # 指定当前数据库中需要排除代码生成的数据表。
         removePrefix: "gf_"
-        descriptionTag: true                                            # 为每个字段添加备注
-        noModelComment: true                                            # 用于指定是否关闭数据模型结构体属性的注释自动生成，内容为数据表对应字段的注释。
+        descriptionTag: true # 为每个字段添加备注
+        noModelComment: true # 用于指定是否关闭数据模型结构体属性的注释自动生成，内容为数据表对应字段的注释。
         jsonCase: "CamelLower"
         gJsonSupport: true
 
         ### 注意！！！
-        clear: false                                                    # 自动删除数据库中不存在对应数据表的本地 dao/do/entity 代码文件。谨慎使用！
-        genTable: false                                                 # 用于控制是否生成数据库表字段定义文件
-        overwriteDao: true                                             # 每次生成 dao 代码时是否重新生成覆盖 dao/internal 目录外层的文件
+        clear: false # 自动删除数据库中不存在对应数据表的本地 dao/do/entity 代码文件。谨慎使用！
+        genTable: false # 用于控制是否生成数据库表字段定义文件
+        overwriteDao: true # 每次生成 dao 代码时是否重新生成覆盖 dao/internal 目录外层的文件
         # shardingPattern:                                              # 分库分表
         #   - "users_?"
         #   - "orders_?"
 
   # https://goframe.org/docs/web/server-config-file-template
 
+  # service:
+  #   # 指定扫描的logic目录路径
+  #   path:       "./internal/logic"
+  #   # 用于生成接口文件（如user.go）的包名
+  #   packagename: "service"
+  #   # 用于识别实现结构体的前缀，默认就是 "s"
+  #   implementPrefix: "s"
   docker:
     build: "-a amd64 -s linux -p temp -ew"
     tagPrefixes:

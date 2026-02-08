@@ -40,7 +40,6 @@ var (
 	CacheExpiredErr = errors.New("缓存过期")
 )
 
-// NewAdapterFile creates and returns a new memory cache object.
 func NewAdapterFile(dir string) gcache.Adapter {
 	return &AdapterFile{
 		dir: dir,

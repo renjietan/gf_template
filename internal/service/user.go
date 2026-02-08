@@ -13,6 +13,10 @@ import (
 type (
 	IUser interface {
 		GetList(ctx context.Context, req *v1.PagerReq) (res *v1.PagerRes, err error)
+		Create(ctx context.Context, req *v1.CreateReq) (res *v1.CreateRes, err error)
+		Delete(ctx context.Context, req *v1.DeleteReq) (res *v1.DeleteRes, err error)
+		GetOne(ctx context.Context, req *v1.GetOneReq) (res *v1.GetOneRes, err error)
+		Update(ctx context.Context, req *v1.UpdateReq) (res *v1.UpdateRes, err error)
 	}
 )
 

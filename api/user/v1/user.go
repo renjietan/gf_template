@@ -18,7 +18,7 @@ type PagerRes struct {
 }
 
 type GetOneReq struct {
-	g.Meta `path:"/user/{id}" method:"get" tags:"User" summary:"Get one user"`
+	g.Meta `path:"/user/{id}" method:"get" tags:"User" summary:"根据ID查询用户"`
 	Id     int `v:"required" dc:"user id"`
 }
 type GetOneRes struct {

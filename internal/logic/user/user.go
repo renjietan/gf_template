@@ -2,17 +2,28 @@ package user
 
 import (
 	"context"
-	"demo/internal/dao"
-	"demo/internal/model/entity"
+	"fmt"
+	v1 "gf_template/api/user/v1"
+	"gf_template/internal/dao"
+	"gf_template/internal/model/entity"
+	"gf_template/internal/service"
 
 	"github.com/gogf/gf/v2/database/gdb"
-
-	v1 "gf_template/api/user/v1"
+	"github.com/gogf/gf/v2/errors/gcode"
+	"github.com/gogf/gf/v2/errors/gerror"
 )
 
-type sUser struct{} // 结构体名以 's' 开头
+type sUser struct{}
 
-func (s *sUser) GetList(ctx context.Context, req *v1.PagerReq) (res *v1.PagerRes, err error) {
+func NewUser() *sUser {
+	return &sUser{}
+}
+
+func init() {
+	service.RegisterUser(NewUser())
+}
+
+func (u *sUser) GetList(ctx context.Context, req *v1.PagerReq) (res *v1.PagerRes, err error) {
 	res = &v1.PagerRes{}
 	totalInt := int(res.Total)
 	totalIntPtr := &totalInt
@@ -31,4 +42,41 @@ func (s *sUser) GetList(ctx context.Context, req *v1.PagerReq) (res *v1.PagerRes
 		res.Length = len(res.List)
 	}
 	return
+}
+
+func (c *sUser) Create(ctx context.Context, req *v1.CreateReq) (res *v1.CreateRes, err error) {
+	err = dao.User.Ctx(ctx).Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
+		info_id, err_info := dao.Info.Ctx(ctx).Data(entity.Info{
+			Info: "张三--详情",
+		}).OmitEmpty().InsertAndGetId()
+		if err_info != nil {
+			return err_info
+		}
+		_, err_user := dao.User.Ctx(ctx).Data(entity.User{
+			Name:   "张三",
+			FId:    1,
+			InfoId: int(info_id),
+		}).OmitEmpty().Insert()
+		if err_user != nil {
+			return err_user
+		}
+		return nil
+	})
+	return
+}
+
+func (c *sUser) Delete(ctx context.Context, req *v1.DeleteReq) (res *v1.DeleteRes, err error) {
+	_, err = dao.User.Ctx(ctx).Delete("id", req.Id)
+	return
+}
+
+func (c *sUser) GetOne(ctx context.Context, req *v1.GetOneReq) (res *v1.GetOneRes, err error) {
+	fmt.Println("=======================", req)
+	res = &v1.GetOneRes{}
+	err = dao.User.Ctx(ctx).Where("id=?", req.Id).Scan(&res.User)
+	return
+}
+
+func (c *sUser) Update(ctx context.Context, req *v1.UpdateReq) (res *v1.UpdateRes, err error) {
+	return nil, gerror.NewCode(gcode.CodeNotImplemented)
 }
