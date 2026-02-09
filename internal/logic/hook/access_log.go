@@ -4,8 +4,12 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
+
+	"gf_template/internal/library/contexts"
 )
 
 // 忽略的请求方式
@@ -17,16 +21,17 @@ func (s *sHook) accessLog(r *ghttp.Request) {
 	if s.isIgnoredRequest(r) {
 		return
 	}
-	// var ctx = r.Context()
-	// if contexts.Get(ctx) == nil {
-	// 	return
-	// }
-
-	// contexts.SetDataMap(ctx, g.Map{
-	// 	"request.takeUpTime": gtime.Now().Sub(gtime.New(r.EnterTime)).Milliseconds(),
-	// 	// ...
-	// })
-
+	var ctx = r.Context()
+	var ctx1 = contexts.Get(ctx)
+	if ctx1 == nil {
+		return
+	}
+	// 添加 额外数据 到上下文中
+	contexts.SetDataMap(ctx, g.Map{
+		"request.takeUpTime": gtime.Now().Sub(gtime.New(r.EnterTime)).Milliseconds(),
+	})
+	var ctx11 = contexts.Get(ctx)
+	fmt.Println("accessLog ctx=========================", ctx11)
 	// simple.SafeGo(ctx, func(ctx context.Context) {
 	// 	if err := service.SysLog().AutoLog(ctx); err != nil {
 	// 		g.Log().Infof(ctx, "hook accessLog err:%+v", err)

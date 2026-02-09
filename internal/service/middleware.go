@@ -13,6 +13,8 @@ import (
 
 type (
 	IMiddleware interface {
+		// 初始化 ctx上下文中间件
+		Ctx(r *ghttp.Request)
 		// 跨域
 		CORS(r *ghttp.Request)
 		// 将用户信息传递到上下文中
