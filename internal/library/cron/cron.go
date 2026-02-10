@@ -14,10 +14,8 @@ import (
 	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/os/glog"
-	"github.com/gogf/gf/v2/os/gtime"
 
 	"gf_template/internal/consts"
-	"gf_template/internal/dao"
 	"gf_template/internal/model/entity"
 	"gf_template/utility/simple"
 )
@@ -74,6 +72,7 @@ func Register(c Cron) {
 	defer crons.Unlock()
 
 	name := c.GetName()
+	fmt.Printf("cron Register: %s, %+v", name, c.Execute)
 	if _, ok := crons.tasks[name]; ok {
 		Logger().Debugf(gctx.GetInitCtx(), "定时任务名称【%v】被重复注册", name)
 		return
@@ -145,10 +144,7 @@ func StartALL(sysCron []*entity.SysCron) (err error) {
 
 		// 执行完毕，单次和多次执行的任务更新状态
 		if cron.Policy == consts.CronPolicyOnce || cron.Policy == consts.CronPolicyTimes {
-			if _, err = dao.SysCron.Ctx(gctx.GetInitCtx()).Where(dao.SysCron.Columns().Id, cron.Id).Data(g.Map{dao.SysCron.Columns().Status: consts.StatusDisable, dao.SysCron.Columns().UpdatedAt: gtime.Now()}).Update(); err != nil {
-				err = gerror.Wrap(err, "定时任务执行失败！")
-				return err
-			}
+			// TODO:这里做点什么
 		}
 	}
 
@@ -229,9 +225,11 @@ func Start(sysCron *entity.SysCron) (err error) {
 
 	c := gcron.Search(GenCronSn(sysCron))
 	if c != nil {
+		fmt.Println("================= Start =====================")
 		c.Start()
 		return
 	}
+	fmt.Println("=================== StartALL ===================")
 	return StartALL([]*entity.SysCron{sysCron})
 }
 

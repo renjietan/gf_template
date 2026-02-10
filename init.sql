@@ -11,7 +11,7 @@
  Target Server Version : 80030 (8.0.30)
  File Encoding         : 65001
 
- Date: 08/02/2026 21:20:11
+ Date: 10/02/2026 21:56:12
 */
 
 SET NAMES utf8mb4;
@@ -30,6 +30,11 @@ CREATE TABLE `gf_famliy`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of gf_famliy
+-- ----------------------------
+INSERT INTO `gf_famliy` VALUES (1, 'fm_1', NULL, NULL);
+
+-- ----------------------------
 -- Table structure for gf_info
 -- ----------------------------
 DROP TABLE IF EXISTS `gf_info`;
@@ -42,6 +47,7 @@ CREATE TABLE `gf_info`  (
   PRIMARY KEY (`id` DESC) USING BTREE,
   CONSTRAINT `gf_info_chk_1` CHECK (`delete_at` in (0,1))
 ) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
 
 -- ----------------------------
 -- Table structure for gf_sys_cron
@@ -63,6 +69,7 @@ CREATE TABLE `gf_sys_cron`  (
   `updated_at` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统_定时任务' ROW_FORMAT = Dynamic;
+
 
 -- ----------------------------
 -- Table structure for gf_sys_cron_group

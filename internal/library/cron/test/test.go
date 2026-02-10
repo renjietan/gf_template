@@ -2,44 +2,50 @@ package test
 
 import (
 	"context"
-
-	"github.com/gogf/gf/v2/frame/g"
+	"fmt"
+	"time"
 
 	"gf_template/internal/consts"
 	"gf_template/internal/library/cron"
 	"gf_template/internal/model/entity"
+	"gf_template/utility/simple"
 )
 
+var count = 0
+var entity_syscron = &entity.SysCron{
+	Name:    Test.name,
+	Pattern: "*/3 * * * * *",
+	Params:  "123456,2226",
+	Policy:  int64(consts.CronPolicyTimes),
+	Count:   3,
+}
+
 func TestCron() {
-	cron.Register(cron_t)
-	cron.Start(&entity.SysCron{
-		Name:    "test",
-		Id:      1,
-		Pattern: "*/3 * * * * *",
-		Policy:  int64(consts.CronPolicySame),
+	ctx := context.TODO()
+	cron.Register(Test)
+	simple.SafeGo(ctx, func(ctx context.Context) {
+		cron.Start(entity_syscron)
 	})
-	// time.Sleep(15 * time.Second)
-	// cron.Stop(&entity.SysCron{
-	// 	Name:    "test",
-	// 	Id:      1,
-	// 	Pattern: "*/3 * * * * *",
-	// 	Policy:  int64(consts.CronPolicySame),
-	// })
 }
 
-var cron_t = &cronT{Name: "test", Id: 1}
+// Test 测试任务（无参数）
+var Test = &cTest{name: "test11111111111+++++"}
 
-type cronT struct {
-	Id      int64
-	Name    string
-	Pattern string
+type cTest struct {
+	name string
 }
 
-func (c *cronT) GetName() string {
-	return c.Name
+func (c *cTest) GetName() string {
+	return c.name
 }
 
-func (c *cronT) Execute(ctx context.Context, parser *cron.Parser) (err error) {
-	g.Log().Info(ctx, "\n================== 定时任务开启 =====================")
+// Execute 执行任务
+func (c *cTest) Execute(ctx context.Context, parser *cron.Parser) (err error) {
+	count++
+	fmt.Printf("parser.Arg%vs=========================%v", count, parser.Args)
+	parser.Logger.Infof(ctx, "cron test Execute:%v", time.Now())
+	if count > 5 {
+		cron.Stop(entity_syscron)
+	}
 	return
 }

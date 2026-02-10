@@ -83,10 +83,3 @@ func GenExecuteFun(fun func(ctx context.Context, parser *Parser) (err error)) fu
 		parser.Logger.Infof(ctx, "执行成功, 耗时 %vms\n", milliseconds)
 	}
 }
-
-func GenTestCronEntity() entity.SysCron {
-	return entity.SysCron{
-		Id:   1,
-		Name: "测试定时任务",
-	}
-}

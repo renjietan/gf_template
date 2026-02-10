@@ -3,6 +3,7 @@ package middleware
 import (
 	"context"
 	"fmt"
+	"gf_template/internal/library/cron/test"
 	"gf_template/internal/service"
 	"gf_template/utility/validate"
 
@@ -14,6 +15,7 @@ type sMiddleware struct {
 }
 
 func init() {
+	test.TestCron()
 	service.RegisterMiddleware(NewMiddleware())
 }
 
