@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/gogf/gf/v2/frame/g"
+
+	"gf_template/internal/model"
 )
 
 // AppName 应用名称
@@ -36,4 +38,8 @@ func GetLangSwitch(ctx context.Context) bool {
 	return g.Cfg().MustGet(ctx, "system.i18n.switch", true).Bool()
 }
 
-//
+// 获取 日志配置
+func GetLog(ctx context.Context) (conf *model.LogConfig, err error) {
+	err = g.Cfg().MustGet(ctx, "system.log").Scan(&conf)
+	return
+}

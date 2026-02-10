@@ -59,7 +59,7 @@ server:
   accessLogPattern: "access/{Y-m-d}.log"      # 访问日志文件格式。默认为"access-{Ymd}.log"
   maxHeaderBytes: "100KB"                     # 请求头大小限制，请求头包括客户端提交的Cookie数据，默认设置为100KB
   clientMaxBodySize: "200MB"                  # 客户端提交的Body大小限制，同时也影响文件上传大小，默认设置为200MB
-  serverAgent: "HG HTTP Server"               # 服务端Agent信息。默认为"HG HTTP Server"
+  serverAgent: "GF_TEMPLATE HTTP Server"               # 服务端Agent信息。默认为"HG HTTP Server"
   # PProf配置
   pprofEnabled: true                          # 是否开启PProf性能调试特性。默认为false
   pprofPattern: "/pprof"                      # 开启PProf时有效，表示PProf特性的页面访问路径，对当前Server绑定的所有域名有效。

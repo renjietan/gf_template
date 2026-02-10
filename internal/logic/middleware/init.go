@@ -3,15 +3,23 @@ package middleware
 import (
 	"context"
 	"fmt"
+	"gf_template/internal/library/contexts"
 	"gf_template/internal/library/cron/test"
+	"gf_template/internal/model"
 	"gf_template/internal/service"
+	"gf_template/utility/simple"
 	"gf_template/utility/validate"
 
+	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
+	"github.com/gogf/gf/v2/i18n/gi18n"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gctx"
 )
 
 type sMiddleware struct {
+	LoginUrl         string // 登录路由地址
+	NotRecordRequest g.Map  // 不记录请求数据的路由（当前请求数据过大时会影响响应效率，可以将路径放到该选项中改善）
 }
 
 func init() {
@@ -23,6 +31,25 @@ func NewMiddleware() *sMiddleware {
 	return &sMiddleware{}
 }
 
+// 初始化 ctx上下文中间件
+func (s *sMiddleware) Ctx(r *ghttp.Request) {
+	r.SetCtx(gi18n.WithLanguage(r.Context(), simple.GetHeaderLocale(r.Context())))
+	data := make(g.Map)
+	if _, ok := s.NotRecordRequest[r.URL.Path]; ok {
+		data["request.body"] = gjson.New(nil)
+	} else {
+		data["request.body"] = gjson.New(r.GetBodyString())
+	}
+	contexts.Init(r, &model.Context{
+		Data: data,
+	})
+	if len(r.Cookie.GetSessionId()) == 0 {
+		r.Cookie.SetSessionId(gctx.CtxId(r.Context()))
+	}
+	r.SetCtx(r.GetNeverDoneCtx())
+	r.Middleware.Next()
+}
+
 // 跨域
 func (s *sMiddleware) CORS(r *ghttp.Request) {
 	r.Response.CORSDefault()
@@ -30,20 +57,8 @@ func (s *sMiddleware) CORS(r *ghttp.Request) {
 }
 
 // 将用户信息传递到上下文中
+// TODO: 目前只是一个示例，实际项目中需要根据自己的业务逻辑来实现
 func (s *sMiddleware) DeliverUserContext(r *ghttp.Request) (err error) {
-	// user, err := token.ParseLoginUser(r)
-	// if err != nil {
-	// 	return
-	// }
-
-	// switch user.App {
-	// case consts.AppAdmin:
-	// 	if err = service.AdminSite().BindUserContext(r.Context(), user); err != nil {
-	// 		return
-	// 	}
-	// default:
-	// 	contexts.SetUser(r.Context(), user)
-	// }
 	return
 }
 

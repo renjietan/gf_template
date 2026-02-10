@@ -1,11 +1,18 @@
 package hook
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/text/gstr"
+
+	"gf_template/internal/library/contexts"
+	"gf_template/internal/service"
+	"gf_template/utility/simple"
 )
 
 // 忽略的请求方式
@@ -17,21 +24,27 @@ func (s *sHook) accessLog(r *ghttp.Request) {
 	if s.isIgnoredRequest(r) {
 		return
 	}
-	// var ctx = r.Context()
-	// if contexts.Get(ctx) == nil {
-	// 	return
-	// }
-
-	// contexts.SetDataMap(ctx, g.Map{
-	// 	"request.takeUpTime": gtime.Now().Sub(gtime.New(r.EnterTime)).Milliseconds(),
-	// 	// ...
-	// })
-
-	// simple.SafeGo(ctx, func(ctx context.Context) {
-	// 	if err := service.SysLog().AutoLog(ctx); err != nil {
-	// 		g.Log().Infof(ctx, "hook accessLog err:%+v", err)
-	// 	}
-	// })
+	var ctx = r.Context()
+	var ctx1 = contexts.Get(ctx)
+	fmt.Println("accessLog ctx Data=========================", ctx1.Data)
+	fmt.Println("accessLog ctx User=========================", ctx1.User)
+	fmt.Println("accessLog ctx Response=========================", ctx1.Response)
+	if ctx1 == nil {
+		return
+	}
+	// 添加 额外数据 到上下文中
+	contexts.SetDataMap(ctx, g.Map{
+		"request.takeUpTime": gtime.Now().Sub(gtime.New(r.EnterTime)).Milliseconds(),
+	})
+	var ctx11 = contexts.Get(ctx)
+	fmt.Println("accessLog11 ctx Data=========================", ctx11.Data)
+	fmt.Println("accessLog11 ctx User=========================", ctx11.User)
+	fmt.Println("accessLog11 ctx Response=========================", ctx11.Response)
+	simple.SafeGo(ctx, func(ctx context.Context) {
+		if err := service.SysLog().AutoLog(ctx); err != nil {
+			g.Log().Infof(ctx, "钩子 accessLog 报错:%+v", err)
+		}
+	})
 }
 
 // isIgnoredRequest 是否忽略请求

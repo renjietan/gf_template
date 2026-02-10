@@ -1,13 +1,13 @@
 # CLI tool, only in development environment.
 # https://goframe.org/docs/cli
 gfcli:
-  run:
-    path: "./bin/development"
-    extra: ""
-    args: ""
-    watchPaths:
-      - api/*.go
-      - internal/controller/*.go
+  # run:
+  #   path: "./bin/development"
+  #   extra: ""
+  #   args: ""
+  #   watchPaths:
+  #     - api/*.go
+  #     - internal/controller/*.go
   # 工具编译配置
   build:
     # 生成的可执行文件名称。如果是 windows 平台，那么默认会加上 .exe 后缀
