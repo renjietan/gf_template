@@ -15,7 +15,6 @@ var (
 		Usage: "main",
 		Brief: "开启主服务，与 ALL类似",
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
-			g.Log().Debug(ctx, "参数:", gcmd.GetArgAll())
 			return All.Func(ctx, parser)
 		},
 	}

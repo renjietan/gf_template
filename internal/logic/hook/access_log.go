@@ -1,6 +1,7 @@
 package hook
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -10,6 +11,8 @@ import (
 	"github.com/gogf/gf/v2/text/gstr"
 
 	"gf_template/internal/library/contexts"
+	"gf_template/internal/service"
+	"gf_template/utility/simple"
 )
 
 // 忽略的请求方式
@@ -23,6 +26,9 @@ func (s *sHook) accessLog(r *ghttp.Request) {
 	}
 	var ctx = r.Context()
 	var ctx1 = contexts.Get(ctx)
+	fmt.Println("accessLog ctx Data=========================", ctx1.Data)
+	fmt.Println("accessLog ctx User=========================", ctx1.User)
+	fmt.Println("accessLog ctx Response=========================", ctx1.Response)
 	if ctx1 == nil {
 		return
 	}
@@ -31,12 +37,14 @@ func (s *sHook) accessLog(r *ghttp.Request) {
 		"request.takeUpTime": gtime.Now().Sub(gtime.New(r.EnterTime)).Milliseconds(),
 	})
 	var ctx11 = contexts.Get(ctx)
-	fmt.Println("accessLog ctx=========================", ctx11)
-	// simple.SafeGo(ctx, func(ctx context.Context) {
-	// 	if err := service.SysLog().AutoLog(ctx); err != nil {
-	// 		g.Log().Infof(ctx, "hook accessLog err:%+v", err)
-	// 	}
-	// })
+	fmt.Println("accessLog11 ctx Data=========================", ctx11.Data)
+	fmt.Println("accessLog11 ctx User=========================", ctx11.User)
+	fmt.Println("accessLog11 ctx Response=========================", ctx11.Response)
+	simple.SafeGo(ctx, func(ctx context.Context) {
+		if err := service.SysLog().AutoLog(ctx); err != nil {
+			g.Log().Infof(ctx, "钩子 accessLog 报错:%+v", err)
+		}
+	})
 }
 
 // isIgnoredRequest 是否忽略请求

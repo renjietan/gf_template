@@ -17,7 +17,6 @@ manifest/output/
 temp/
 temp.yaml
 bin
-*.log
 storage/
 logs/
 *.profile

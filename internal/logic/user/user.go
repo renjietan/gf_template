@@ -3,14 +3,15 @@ package user
 import (
 	"context"
 	"fmt"
-	v1 "gf_template/api/user/v1"
-	"gf_template/internal/dao"
-	"gf_template/internal/model/entity"
-	"gf_template/internal/service"
 
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
+
+	v1 "gf_template/api/user/v1"
+	"gf_template/internal/dao"
+	"gf_template/internal/model/entity"
+	"gf_template/internal/service"
 )
 
 type sUser struct{}
@@ -66,7 +67,8 @@ func (c *sUser) Create(ctx context.Context, req *v1.CreateReq) (res *v1.CreateRe
 }
 
 func (c *sUser) Delete(ctx context.Context, req *v1.DeleteReq) (res *v1.DeleteRes, err error) {
-	_, err = dao.User.Ctx(ctx).Delete("id", req.Id)
+	fmt.Println("==========================", req.Id)
+	_, err = dao.User.Ctx(ctx).Unscoped().Delete("id", req.Id)
 	return
 }
 
