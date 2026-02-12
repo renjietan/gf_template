@@ -34,6 +34,7 @@ var Http = &gcmd.Command{
 		s.BindMiddleware("/*any", []ghttp.HandlerFunc{
 			service.Middleware().Ctx,  // 初始化请求上下文，需要第一个进行加载，后续中间件存在依赖关系, 否则后续中间价无法找到上下文数据
 			service.Middleware().CORS, // 跨域中间件，自动处理跨域问题
+			service.Middleware().HandlerResponse,
 		}...)
 		// TODO: 需要单独管理
 		s.Group("/", func(group *ghttp.RouterGroup) {

@@ -24,6 +24,7 @@ type (
 		IsExceptAuth(ctx context.Context, appName string, path string) bool
 		// IsExceptLogin 是否是不需要登录的路由地址
 		IsExceptLogin(ctx context.Context, appName string, path string) bool
+		HandlerResponse(r *ghttp.Request)
 	}
 )
 
