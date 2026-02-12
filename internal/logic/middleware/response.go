@@ -6,9 +6,13 @@ import (
 
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
+	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/util/gconv"
 
+	"gf_template/internal/library/contexts"
 	"gf_template/internal/model"
 	"gf_template/utility/ternary"
 )
@@ -39,7 +43,7 @@ func (s *sMiddleware) HandlerResponse(r *ghttp.Request) {
 	var (
 		msg  string
 		err  = r.GetError()
-		res  = r.GetHandlerResponse()
+		data = r.GetHandlerResponse()
 		code = gerror.Code(err)
 	)
 	if err != nil {
@@ -64,12 +68,15 @@ func (s *sMiddleware) HandlerResponse(r *ghttp.Request) {
 		}
 		msg = code.Message()
 	}
-	r.Response.WriteJson(model.Response{
+	res := &model.Response{
 		Code:      ternary.If(code.Code() == 0, 0, 500),
 		Message:   ternary.If(err == nil, msg, ""),
 		Error:     ternary.If(err == nil, "", msg),
-		Timestamp: int64(gtime.Now().Millisecond()),
-		Data:      ternary.If(code.Code() == 0, res, nil),
-	})
-
+		Timestamp: gtime.Timestamp(),
+		Data:      ternary.If(code.Code() == 0, data, nil),
+		TraceID:   gctx.CtxId(r.Context()),
+	}
+	contexts.SetResponse(r.Context(), res)
+	g.Log().Info(r.Context(), gconv.String(res))
+	r.Response.WriteJson(res)
 }
