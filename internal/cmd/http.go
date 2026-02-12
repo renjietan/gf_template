@@ -30,7 +30,7 @@ var Http = &gcmd.Command{
 		// 请求响应结束后回调
 		s.BindHookHandler("/*any", ghttp.HookAfterOutput, service.Hook().AfterOutput)
 
-		// 注册中间价
+		// 注册全局中间件，按照注册顺序执行
 		s.BindMiddleware("/*any", []ghttp.HandlerFunc{
 			service.Middleware().Ctx,  // 初始化请求上下文，需要第一个进行加载，后续中间件存在依赖关系, 否则后续中间价无法找到上下文数据
 			service.Middleware().CORS, // 跨域中间件，自动处理跨域问题
@@ -51,7 +51,7 @@ var Http = &gcmd.Command{
 		// goroutine: 报告所有当前 goroutine 的堆栈跟踪。
 		// block: 显示 goroutine 在哪里阻塞同步原语（包括计时器通道）的等待。默认情况下未启用，需要手动调用 runtime.SetBlockProfileRate 启用。
 		// mutex: 报告锁竞争。默认情况下未启用，需要手动调用 runtime.SetMutexProfileFraction 启用。
-		go ghttp.StartPProfServer("localhost:8199")
+		go ghttp.StartPProfServer(consts.PprofPath)
 		// 开启服务性能工具
 		s.EnablePProf()
 		// 设置优雅模式 涉及到 shutdown restart

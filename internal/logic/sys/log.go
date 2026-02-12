@@ -53,8 +53,8 @@ func (s *sSysLog) AutoLog(ctx context.Context) error {
 			return
 		}
 		// fmt.Println("\ndata======================", gconv.String(data))
-		g.Log().Infof(ctx, "sys log 数据: \n%+v", gconv.String(data))
-		// TODO: 这里是否有必要 丢入 队列
+		g.Log().Infof(ctx, "\nsys log 数据: \n%+v", gconv.String(data))
+		// TODO: 这里是否有必要丢入队列
 		// TODO：根据业务需求 是否需要存入数据库
 	})
 }
@@ -129,7 +129,7 @@ func (s *sSysLog) AnalysisLog(ctx context.Context) model.SysLog {
 	}
 
 	// 请求耗时
-	if tt, ok := mctx.Data["request.takeUpTime"].(int64); ok {
+	if tt, ok := mctx.Data["request.waitTime"].(int64); ok {
 		takeUpTime = tt
 	}
 	headerData.MustAppend("Enter-Time", request.EnterTime.String())
