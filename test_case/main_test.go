@@ -2,18 +2,37 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"testing"
+	"time"
 
-	"github.com/gogf/gf/v2/os/glog"
+	"github.com/gogf/gf/v2/container/gqueue"
+	"github.com/gogf/gf/v2/os/gctx"
+	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/os/gtimer"
 )
 
 func TestContext(t *testing.T) {
-	ctx := context.TODO()
-	l := glog.New()
-	l.SetFlags(glog.F_TIME_TIME | glog.F_FILE_SHORT)
-	l.Print(ctx, "time and short line number")
-	l.SetFlags(glog.F_TIME_MILLI | glog.F_FILE_LONG)
-	l.Print(ctx, "time with millisecond and long line number")
-	l.SetFlags(glog.F_TIME_STD | glog.F_FILE_LONG)
-	l.Print(ctx, "standard time format and long line number")
+	q := gqueue.NewTQueue[string]()
+	ctx := gctx.New()
+	// 数据生产者，每隔1秒往队列写数据
+	gtimer.SetInterval(ctx, time.Second, func(ctx context.Context) {
+		v := gtime.Now().String()
+		q.Push(v)
+		fmt.Println("Push:", v)
+	})
+
+	// 3秒后关闭队列
+	gtimer.SetTimeout(ctx, 3*time.Second, func(ctx context.Context) {
+		q.Close()
+	})
+
+	// 消费者，不停读取队列数据并输出到终端
+	for {
+		if v := q.Pop(); v != "" {
+			fmt.Println("Pop:", v)
+		} else {
+			break
+		}
+	}
 }

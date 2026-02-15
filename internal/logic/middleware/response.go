@@ -1,82 +1,149 @@
+// Package middleware
+// @Link  https://github.com/bufanyun/hotgo
+// @Copyright  Copyright (c) 2023 HotGo CLI
+// @Author  Ms <133814250@qq.com>
+// @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package middleware
 
 import (
-	"mime"
-	"net/http"
+	"gf_template/internal/consts"
+	"gf_template/internal/library/response"
+	charset "gf_template/utility/chatset"
+	sysconfig "gf_template/utility/config"
+	"gf_template/utility/simple"
 
 	"github.com/gogf/gf/v2/errors/gcode"
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
-	"github.com/gogf/gf/v2/os/gctx"
-	"github.com/gogf/gf/v2/os/gtime"
-	"github.com/gogf/gf/v2/util/gconv"
-
-	"gf_template/internal/library/contexts"
-	"gf_template/internal/model"
-	"gf_template/utility/ternary"
+	"github.com/gogf/gf/v2/text/gstr"
+	"github.com/gogf/gf/v2/util/gmeta"
 )
 
-const (
-	contentTypeEventStream  = "text/event-stream"
-	contentTypeOctetStream  = "application/octet-stream"
-	contentTypeMixedReplace = "multipart/x-mixed-replace"
-)
-
-var (
-	streamContentType = []string{contentTypeEventStream, contentTypeOctetStream, contentTypeMixedReplace}
-)
-
-func (s *sMiddleware) HandlerResponse(r *ghttp.Request) {
+// ResponseHandler HTTP响应预处理
+func (s *sMiddleware) ResponseHandler(r *ghttp.Request) {
 	r.Middleware.Next()
-	if r.Response.BufferLength() > 0 || r.Response.BytesWritten() > 0 {
+
+	switch r.Response.Status {
+	case 403:
+		r.Response.Writeln("403 - 网站拒绝显示此网页")
+		return
+	case 404:
+		r.Response.Writeln("404 - 你似乎来到了没有知识存在的荒原…")
 		return
 	}
 
-	mediaType, _, _ := mime.ParseMediaType(r.Response.Header().Get("Content-Type"))
-	for _, ct := range streamContentType {
-		if mediaType == ct {
-			return
-		}
+	contentType := getContentType(r)
+	// 已存在响应
+	if contentType != consts.HTTPContentTypeStream && r.Response.BufferLength() > 0 { // && contexts.Get(r.Context()).Response != nil
+		return
 	}
 
-	var (
-		msg  string
-		err  = r.GetError()
-		data = r.GetHandlerResponse()
-		code = gerror.Code(err)
-	)
-	if err != nil {
-		if code == gcode.CodeNil {
-			code = gcode.CodeInternalError
-		}
-		msg = err.Error()
-	} else {
-		if r.Response.Status > 0 && r.Response.Status != http.StatusOK {
-			switch r.Response.Status {
-			case http.StatusNotFound:
-				code = gcode.CodeNotFound
-			case http.StatusForbidden:
-				code = gcode.CodeNotAuthorized
-			default:
-				code = gcode.CodeUnknown
-			}
-			err = gerror.NewCode(code, msg)
-			r.SetError(err)
+	switch contentType {
+	case consts.HTTPContentTypeHtml:
+		s.responseHtml(r)
+		return
+	case consts.HTTPContentTypeXml:
+		s.responseXml(r)
+		return
+	case consts.HTTPContentTypeStream:
+	case consts.HTTPContentTypeOctetStream:
+	default:
+		s.responseJson(r)
+	}
+}
+
+// responseHtml html模板响应
+func (s *sMiddleware) responseHtml(r *ghttp.Request) {
+	code, message, resp := parseResponse(r)
+	if code == gcode.CodeOK.Code() {
+		return
+	}
+
+	r.Response.ClearBuffer()
+	_ = r.Response.WriteTplContent(simple.DefaultErrorTplContent(r.Context()), g.Map{"code": code, "message": message, "stack": resp})
+}
+
+// responseXml xml响应
+func (s *sMiddleware) responseXml(r *ghttp.Request) {
+	code, message, data := parseResponse(r)
+	response.RXml(r, code, message, data)
+}
+
+// responseJson json响应
+func (s *sMiddleware) responseJson(r *ghttp.Request) {
+	code, message, data := parseResponse(r)
+	response.RJson(r, code, message, data)
+}
+
+// parseResponse 解析响应数据
+func parseResponse(r *ghttp.Request) (code int, message string, resp interface{}) {
+	ctx := r.Context()
+	err := r.GetError()
+	if err == nil {
+		return gcode.CodeOK.Code(), "操作成功", r.GetHandlerResponse()
+	}
+
+	// 是否输出错误堆栈到页面
+	if sysconfig.Debug(ctx) {
+		message = gerror.Current(err).Error()
+		if getContentType(r) == consts.HTTPContentTypeHtml {
+			resp = charset.SerializeStack(err)
 		} else {
-			code = gcode.CodeOK
+			resp = charset.ParseErrStack(err)
 		}
-		msg = code.Message()
+	} else {
+		message = ErrorMessage(gerror.Current(err))
 	}
-	res := &model.Response{
-		Code:      ternary.If(code.Code() == 0, 0, 500),
-		Message:   ternary.If(err == nil, msg, ""),
-		Error:     ternary.If(err == nil, "", msg),
-		Timestamp: gtime.Timestamp(),
-		Data:      ternary.If(code.Code() == 0, data, nil),
-		TraceID:   gctx.CtxId(r.Context()),
+
+	code = gerror.Code(err).Code()
+
+	// 记录异常日志
+	// 如果你想对错误做不同的处理，可以通过定义不同的错误码来区分
+	// 默认-1为安全可控错误码只记录文件日志，非-1为不可控错误，记录文件日志+服务日志并打印堆栈
+	if code == gcode.CodeNil.Code() {
+		g.Log().Stdout(false).Infof(ctx, "异常:%v", err)
+	} else {
+		g.Log().Errorf(ctx, "异常:%v", err)
 	}
-	contexts.SetResponse(r.Context(), res)
-	g.Log().Info(r.Context(), gconv.String(res))
-	r.Response.WriteJson(res)
+	return
+}
+
+func getContentType(r *ghttp.Request) (contentType string) {
+	contentType = r.Response.Header().Get("Content-Type")
+	if contentType != "" {
+		return
+	}
+
+	mime := gmeta.Get(r.GetHandlerResponse(), "mime").String()
+	if mime == "" {
+		contentType = consts.HTTPContentTypeJson
+	} else {
+		contentType = mime
+	}
+	return
+}
+
+// 错误解释
+const (
+	ErrorORM         = "sql执行异常"
+	ErrorNotData     = "数据不存在"
+	ErrorRotaPointer = "指针转换异常"
+)
+
+// 需要隐藏真实错误的Wrap，开启访问日志后仍然会将真实错误记录
+var concealErrorSlice = []string{ErrorORM, ErrorRotaPointer}
+
+func ErrorMessage(err error) (message string) {
+	if err == nil {
+		return "操作失败！~"
+	}
+
+	message = err.Error()
+	for _, e := range concealErrorSlice {
+		if gstr.Contains(message, e) {
+			return "操作失败，请稍后重试！~"
+		}
+	}
+	return
 }
