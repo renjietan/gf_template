@@ -1,15 +1,10 @@
-// Package cmd
-// @Link  https://github.com/bufanyun/hotgo
-// @Copyright  Copyright (c) 2023 HotGo CLI
-// @Author  Ms <133814250@qq.com>
-// @License  https://github.com/bufanyun/hotgo/blob/master/LICENSE
 package cmd
 
 import (
 	"context"
 	"gf_template/internal/global"
 	"gf_template/internal/library/queue"
-	_ "gf_template/library/queue"
+	_ "gf_template/internal/queues"
 	"gf_template/utility/simple"
 
 	"github.com/gogf/gf/v2/os/gcmd"
