@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"runtime"
 
+	"gf_template/internal/library/cache"
+	sysconfig "gf_template/utility/config"
+	"gf_template/utility/validate"
+
 	"github.com/gogf/gf/v2"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gcfg"
@@ -12,10 +16,6 @@ import (
 	"github.com/gogf/gf/v2/os/glog"
 	"github.com/gogf/gf/v2/os/gtime"
 	"github.com/gogf/gf/v2/util/gmode"
-
-	"gf_template/internal/library/cache"
-	sysconfig "gf_template/utility/config"
-	"gf_template/utility/validate"
 )
 
 func Init(ctx context.Context) {

@@ -8,5 +8,6 @@ import (
 )
 
 func Queue(ctx context.Context) *gvar.Var {
-	return g.Cfg().MustGet(ctx, "queue")
+	res := g.Cfg().MustGet(ctx, "queue")
+	return res
 }

@@ -27,7 +27,7 @@ func RegisterConsumer(cs Consumer) {
 	defer consumers.Unlock()
 	topic := cs.GetTopic()
 	if _, ok := consumers.list[topic]; ok {
-		Logger().Debugf(ctx, "queue.RegisterConsumer topic:%v duplicate registration.", topic)
+		Logger().Debugf(ctx, "消息队列: 主题%v 重复注册.", topic)
 		return
 	}
 	consumers.list[topic] = cs

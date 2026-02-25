@@ -2,12 +2,13 @@ package cmd
 
 import (
 	"context"
+
+	"github.com/gogf/gf/v2/os/gcmd"
+
 	"gf_template/internal/global"
 	"gf_template/internal/library/queue"
 	_ "gf_template/internal/queues"
 	"gf_template/utility/simple"
-
-	"github.com/gogf/gf/v2/os/gcmd"
 )
 
 var (
@@ -16,6 +17,7 @@ var (
 		Brief:       "消息队列",
 		Description: ``,
 		Func: func(ctx context.Context, parser *gcmd.Parser) (err error) {
+			queue.Init()
 			// 服务日志处理
 			queue.Logger().SetHandlers(global.LoggingServeLogHandler)
 

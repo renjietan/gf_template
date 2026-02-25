@@ -3,11 +3,12 @@ package queues
 import (
 	"context"
 	"encoding/json"
-	"gf_template/internal/consts"
-	"gf_template/internal/library/queue"
 
 	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/os/gtime"
+
+	"gf_template/internal/consts"
+	"gf_template/internal/library/queue"
 )
 
 type SysLoginLog struct {
@@ -38,7 +39,7 @@ type qLoginLog struct{}
 
 // GetTopic 主题
 func (q *qLoginLog) GetTopic() string {
-	return consts.QueueLoginLogTopic
+	return consts.QueueServeLogTopic
 }
 
 // Handle 处理消息

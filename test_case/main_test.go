@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"gf_template/test_case/tt"
 	"testing"
 	"time"
 
@@ -35,4 +36,8 @@ func TestContext(t *testing.T) {
 			break
 		}
 	}
+}
+
+func TestInit(t *testing.T) {
+	tt.Init()
 }

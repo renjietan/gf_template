@@ -7,9 +7,11 @@ import (
 )
 
 func GetCacheAdapter(ctx context.Context) string {
-	return g.Cfg().MustGet(ctx, "cache.adapter").String()
+	res := g.Cfg().MustGet(ctx, "cache.adapter").String()
+	return res
 }
 
 func GetCacheFileDir(ctx context.Context) string {
-	return g.Cfg().MustGet(ctx, "cache.fileDir").String()
+	res := g.Cfg().MustGet(ctx, "cache.fileDir").String()
+	return res
 }

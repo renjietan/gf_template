@@ -1,7 +1,6 @@
 // https://goframe.org/docs/web/api-document-swagger-ui
 package consts
 
-// 1-2、自定义 【swagger】 模板, 共三步
 const (
 	SwaggerTpl = `<!DOCTYPE html>
 <html lang="en">

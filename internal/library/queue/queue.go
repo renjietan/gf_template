@@ -1,13 +1,15 @@
 package queue
 
 import (
-	"gf_template/internal/library/queue/disk"
-	sysconfig "gf_template/utility/config"
+	"fmt"
 	"sync"
 	"time"
 
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/os/gctx"
+
+	"gf_template/internal/library/queue/disk"
+	sysconfig "gf_template/utility/config"
 )
 
 type MqProducer interface {
@@ -47,12 +49,17 @@ var (
 	config                Config
 )
 
-func init() {
+func Init() {
 	mqProducerInstanceMap = make(map[string]MqProducer)
 	mqConsumerInstanceMap = make(map[string]MqConsumer)
+	fmt.Println("========================= 初始化【消息队列配置】 ===========================")
 	if err := sysconfig.Queue(ctx).Scan(&config); err != nil {
-		Logger().Warningf(ctx, "消息队列 初始化失败:%+v", err)
+		Logger().Warningf(ctx, "初始化【消息队列配置】失败:%+v", err)
 	}
+}
+
+func init() {
+	fmt.Println("================================= 初始化【消息队列配置2】 ==================================")
 }
 
 // InstanceConsumer 实例化消费者
@@ -97,7 +104,7 @@ func NewProducer(groupName string) (mqClient MqProducer, err error) {
 // NewConsumer 初始化消费者实例
 func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
 	if groupName == "" {
-		err = gerror.New("mq groupName is empty.")
+		err = gerror.New("groupname 不可为空")
 		return
 	}
 

@@ -26,7 +26,7 @@ var (
 			g.Log().Debug(ctx, "\n======================= 所有服务 ==========================")
 
 			// 需要启动的服务
-			var allServers = []*gcmd.Command{Http, Cron}
+			var allServers = []*gcmd.Command{Http, Cron, Queue}
 
 			for _, server := range allServers {
 				var cmd = server
@@ -63,7 +63,7 @@ var (
 )
 
 func init() {
-	if err := Main.AddCommand(Help, Http, Cron); err != nil {
+	if err := Main.AddCommand(Help, Http, Cron, Queue); err != nil {
 		panic(err)
 	}
 }
