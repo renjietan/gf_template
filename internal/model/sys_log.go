@@ -32,3 +32,9 @@ type SysLog struct {
 	CreatedAt  *gtime.Time `json:"createdAt"  orm:"created_at"   description:"创建时间"`
 	UpdatedAt  *gtime.Time `json:"updatedAt"  orm:"updated_at"   description:"修改时间"`
 }
+
+type ServeLogConfig struct {
+	Switch      bool     `json:"switch"`
+	Queue       bool     `json:"queue"`
+	LevelFormat []string `json:"levelFormat"`
+}

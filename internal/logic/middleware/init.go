@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"gf_template/internal/library/contexts"
-	"gf_template/internal/library/cron/test"
 	"gf_template/internal/model"
 	"gf_template/internal/service"
 	"gf_template/utility/simple"
@@ -23,7 +22,7 @@ type sMiddleware struct {
 }
 
 func init() {
-	test.TestCron()
+	//test.TestCron()
 	service.RegisterMiddleware(NewMiddleware())
 }
 

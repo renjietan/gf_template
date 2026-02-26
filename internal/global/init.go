@@ -3,18 +3,27 @@ package global
 import (
 	"context"
 	"fmt"
+	"gf_template/internal/consts"
+	"gf_template/internal/library/queue"
+	"gf_template/internal/queues"
+	charset "gf_template/utility/chatset"
 	"runtime"
+	"strings"
 
 	"gf_template/internal/library/cache"
 	sysconfig "gf_template/utility/config"
 	"gf_template/utility/validate"
 
 	"github.com/gogf/gf/v2"
+	"github.com/gogf/gf/v2/container/gvar"
+	"github.com/gogf/gf/v2/encoding/gjson"
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/os/gcfg"
+	"github.com/gogf/gf/v2/os/gctx"
 	"github.com/gogf/gf/v2/os/gfile"
 	"github.com/gogf/gf/v2/os/glog"
 	"github.com/gogf/gf/v2/os/gtime"
+	"github.com/gogf/gf/v2/text/gstr"
 	"github.com/gogf/gf/v2/util/gmode"
 )
 
@@ -58,6 +67,15 @@ func Init(ctx context.Context) {
 func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 	in.Next(ctx)
 
+	//err := g.Try(ctx, func(ctx context.Context) {
+	//	var err error
+	//	defer func() {
+	//		if err != nil {
+	//			panic(err)
+	//		}
+	//	}()
+	//})
+
 	err := g.Try(ctx, func(ctx context.Context) {
 		var err error
 		defer func() {
@@ -65,6 +83,60 @@ func LoggingServeLogHandler(ctx context.Context, in *glog.HandlerInput) {
 				panic(err)
 			}
 		}()
+
+		// web服务日志不做记录，因为会导致重复记录
+		r := g.RequestFromCtx(ctx)
+		if r != nil && r.Server != nil && in.Logger.GetConfig().Path == r.Server.Logger().GetConfig().Path {
+			return
+		}
+
+		conf, err := sysconfig.GetServeLog(ctx)
+		if err != nil {
+			return
+		}
+
+		if conf == nil {
+			return
+		}
+
+		if !conf.Switch {
+			return
+		}
+
+		if in.LevelFormat == "" || !gstr.InArray(conf.LevelFormat, in.LevelFormat) {
+			return
+		}
+
+		if in.Stack == "" {
+			in.Stack = in.Logger.GetStack()
+		}
+
+		if len(in.Content) == 0 {
+			in.Content = gstr.StrLimit(gvar.New(in.Values).String(), consts.MaxServeLogContentLen)
+		}
+
+		var data queues.SysServeLog
+		data.TraceId = gctx.CtxId(ctx)
+		data.LevelFormat = in.LevelFormat
+		data.Content = in.Content
+		data.Stack = gjson.New(charset.ParseStack(in.Stack))
+		data.Line = strings.TrimRight(in.CallerPath, ":")
+		data.TriggerNs = in.Time.UnixNano()
+		data.Status = consts.StatusEnabled
+
+		if gstr.Contains(in.Content, `exception recovered`) {
+			data.LevelFormat = "PANI"
+		}
+
+		if data.Stack.IsNil() {
+			data.Stack = gjson.New(consts.NilJsonToString)
+		}
+
+		if conf.Queue {
+			err = queue.Push(consts.QueueServeLogTopic, data)
+		} else {
+			// TODO: 如果未配置消息队列， 这里需要做些什么？
+		}
 	})
 
 	if err != nil {

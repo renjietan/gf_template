@@ -72,7 +72,7 @@ type DiskConsumerMq struct {
 // ListenReceiveMsgDo 消费数据
 func (q *DiskConsumerMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) (err error) {
 	if topic == "" {
-		return gerror.New("disk.ListenReceiveMsgDo topic is empty")
+		return gerror.New("disk.ListenReceiveMsgDo 未知的主题")
 	}
 
 	var (
@@ -85,7 +85,7 @@ func (q *DiskConsumerMq) ListenReceiveMsgDo(topic string, receiveDo func(mqMsg M
 			if index, offset, data, err := queue.Read(); err == nil {
 				var mqMsg MqMsg
 				if err = json.Unmarshal(data, &mqMsg); err != nil {
-					Logger().Warningf(ctx, "disk.ListenReceiveMsgDo Unmarshal err:%+v, topic：%v, data:%+v .", err, topic, string(data))
+					Logger().Warningf(ctx, "disk.ListenReceiveMsgDo 消息转换JSON失败, err:%+v, topic：%v, data:%+v .", err, topic, string(data))
 					continue
 				}
 				if mqMsg.MsgId != "" {

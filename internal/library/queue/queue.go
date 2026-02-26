@@ -1,7 +1,6 @@
 package queue
 
 import (
-	"fmt"
 	"sync"
 	"time"
 
@@ -16,6 +15,10 @@ type MqProducer interface {
 	SendMsg(topic string, body string) (mqMsg MqMsg, err error)
 	SendByteMsg(topic string, body []byte) (mqMsg MqMsg, err error)
 	SendDelayMsg(topic string, body string, delay int64) (mqMsg MqMsg, err error)
+}
+
+type MqConsumer interface {
+	ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) (err error)
 }
 
 const (
@@ -52,14 +55,9 @@ var (
 func Init() {
 	mqProducerInstanceMap = make(map[string]MqProducer)
 	mqConsumerInstanceMap = make(map[string]MqConsumer)
-	fmt.Println("========================= 初始化【消息队列配置】 ===========================")
 	if err := sysconfig.Queue(ctx).Scan(&config); err != nil {
 		Logger().Warningf(ctx, "初始化【消息队列配置】失败:%+v", err)
 	}
-}
-
-func init() {
-	fmt.Println("================================= 初始化【消息队列配置2】 ==================================")
 }
 
 // InstanceConsumer 实例化消费者
@@ -79,7 +77,7 @@ func NewProducer(groupName string) (mqClient MqProducer, err error) {
 	}
 
 	if groupName == "" {
-		err = gerror.New("mq groupName is empty.")
+		err = gerror.New("groupName不可为空.")
 		return
 	}
 
@@ -88,7 +86,7 @@ func NewProducer(groupName string) (mqClient MqProducer, err error) {
 		config.Disk.GroupName = groupName
 		mqClient, err = RegisterDiskMqProducer(config.Disk)
 	default:
-		err = gerror.New("queue driver is not support")
+		err = gerror.New("配置文件中声明的驱动暂未支持")
 	}
 
 	if err != nil {
@@ -124,8 +122,4 @@ func NewConsumer(groupName string) (mqClient MqConsumer, err error) {
 	defer mutex.Unlock()
 	mqConsumerInstanceMap[groupName] = mqClient
 	return
-}
-
-type MqConsumer interface {
-	ListenReceiveMsgDo(topic string, receiveDo func(mqMsg MqMsg)) (err error)
 }

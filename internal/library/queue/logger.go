@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	ConsumerLogErrFormat = "消费 [%s] 失败, body:%+v, err:%+v"
-	ProducerLogErrFormat = "生产 [%s] 失败, body:%+v, err:%+v"
+	ConsumerLogErrFormat = "消费 [%s], body:%+v, err:%+v"
+	ProducerLogErrFormat = "生产 [%s], body:%+v, err:%+v"
 )
 
 func Logger() *glog.Logger {
@@ -19,7 +19,8 @@ func Logger() *glog.Logger {
 // ConsumerLog 消费日志
 func ConsumerLog(ctx context.Context, topic string, mqMsg MqMsg, err error) {
 	if err != nil {
-		Logger().Errorf(ctx, ConsumerLogErrFormat, topic, string(mqMsg.Body), err)
+		_body := string(mqMsg.Body)
+		Logger().Errorf(ctx, ConsumerLogErrFormat, topic, _body, err)
 	}
 }
 

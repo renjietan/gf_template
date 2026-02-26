@@ -42,7 +42,7 @@ func (q *qServeLog) GetTopic() string {
 func (q *qServeLog) Handle(ctx context.Context, mqMsg queue.MqMsg) error {
 	var data SysServeLog
 	if err := json.Unmarshal(mqMsg.Body, &data); err != nil {
-		g.Dump("ServeLog Handle Unmarshal err:", err)
+		g.Dump("Queues.ServeLog.Handle： JSON 转换失败:", err)
 		return nil
 	}
 

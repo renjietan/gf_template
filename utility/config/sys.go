@@ -43,3 +43,8 @@ func GetLog(ctx context.Context) (conf *model.LogConfig, err error) {
 	err = g.Cfg().MustGet(ctx, "system.log").Scan(&conf)
 	return
 }
+
+func GetServeLog(ctx context.Context) (conf *model.ServeLogConfig, err error) {
+	err = g.Cfg().MustGet(ctx, "system.serveLog").Scan(&conf)
+	return
+}

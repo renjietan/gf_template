@@ -1,7 +1,7 @@
 # 系统配置
 system:
   # 应用名称
-  appName: "gf_system_appName"
+  appName: "gf_template"
   # 时区
   timeZone: Asia/Shanghai
   # debug开关，开启后接口出现错误时会向前端输出堆栈信息，可选：false|true，默认为true
@@ -14,6 +14,10 @@ system:
     queue: true                                       # 是否启用队列，启用时需要配置队列信息，可选：false|true，默认为true
     module: [ "admin", "api", "default" ]             # 需要记录的模块
     skipCode: [ ]                                     # 不记录的状态码，如： ["0", "-1"]
+  serveLog:
+    switch: true                                      # 日志开关，可选：false|true，默认为true
+    queue: true                                       # 是否启用队列，启用时需要配置队列信息，可选：false|true，默认为true
+    levelFormat: [ "WARN", "ERRO", "FATA", "PANI" ]   # 需要记录的等级
   # 国际化
   i18n:
     path: "./i18n"                                    # 指定语言文件存储的目录路径
@@ -134,21 +138,11 @@ router:
     prefix: "/admin"
     # 不需要验证登录的路由地址
     exceptLogin: [
-      "/sms/send",              # 短信验证码
-      "/wechat/authorizeCall",  # 微信用户授权回调
+
     ]
     # 不需要验证权限的路由地址
     exceptAuth: [
-      "/member/info",                   # 登录用户信息
-      "/role/dynamic",                  # 获取动态路由
-      "/notice/pullMessages",           # 拉取我的消息
-      "/notice/readAll",                # 设置全部已读公告
-      "/notice/upRead",                 # 已读指定公告
-      "/dictData/option",               # 单个数据字典
-      "/dictData/options",              # 多个数据字典
-      "/provinces/select",              # 动态省市区选项
-      "/provinces/cityLabel",           # 动态解析省市区名称
-      "/member/option",                 # 用户选项
+
     ]
   # 接口
   api:
@@ -193,7 +187,7 @@ queue:
   groupName: "gf_queue"                               # mq群组名称
   # 磁盘
   disk:
-    path: "./storage/diskqueue"                       # 数据存放路径
+    path: "./storage/disk"                       # 数据存放路径
     batchSize: 100                                    # 每100条消息同步一次，batchSize和batchTime满足其一就会同步一次
     batchTime: 1                                      # 每1秒消息同步一次
     segmentSize: 10485760                             # 每个topic分片数据文件最大字节，默认10M
