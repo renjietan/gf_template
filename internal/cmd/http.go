@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"gf_template/utility/simple"
 
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
@@ -40,19 +41,26 @@ var Http = &gcmd.Command{
 				user.NewV1(),
 			)
 		})
+		// 开启服务性能工具
+		s.EnablePProf()
 		// 服务性能工具：http://localhost:8199/debug/pprof
-		// 安装 Graphviz 图形化工具，
-		// 		(1) 执行命令：go tool pprof -http :8080 "http://127.0.0.1:8199/debug/pprof/profile"（等待30秒）
-		// 		(2-1) curl http://127.0.0.1:8199/debug/pprof/profile > pprof.profile
-		// 		(2-2) go tool pprof -http :8080 pprof.profile
+		// (1) 若需可视化界面，安装 Graphviz 图形化工具（可选），
+		// (2) 可视化界面：
+		//		(2-1) go tool pprof -http :8080 "http://127.0.0.1:8199/debug/pprof/profile"（等待30秒）
+		//		(2-2) 访问：http://127.0.0.1:8080/ui/
+		// (3) 本地化：
+		// 		(3-1) curl http://127.0.0.1:8199/debug/pprof/profile > pprof.profile
+		// 		(3-2) go tool pprof -http :8199 pprof.profile
+		//		(3-3) 访问： http://127.0.0.1:8199/debug/pprof
 		// heap: 报告内存分配样本；用于监视当前和历史内存使用情况，并检查内存泄漏。
 		// threadcreate: 报告了导致创建新OS线程的程序部分。
 		// goroutine: 报告所有当前 goroutine 的堆栈跟踪。
 		// block: 显示 goroutine 在哪里阻塞同步原语（包括计时器通道）的等待。默认情况下未启用，需要手动调用 runtime.SetBlockProfileRate 启用。
 		// mutex: 报告锁竞争。默认情况下未启用，需要手动调用 runtime.SetMutexProfileFraction 启用。
-		go ghttp.StartPProfServer(consts.PprofPath)
-		// 开启服务性能工具
-		s.EnablePProf()
+
+		simple.SafeGo(ctx, func(ctx context.Context) {
+			ghttp.StartPProfServer(consts.PprofPath)
+		})
 		// 设置优雅模式 涉及到 shutdown restart
 		s.SetGraceful(true)
 		// 通过web网页控制服务 重启 与 关闭，默认地址：http://localhost:8000/debug/admin

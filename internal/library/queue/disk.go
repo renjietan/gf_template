@@ -135,14 +135,14 @@ func NewDiskQueue(topic string, config *disk.Config) *disk.Queue {
 
 	if !gfile.Exists(conf.Path) {
 		if err := gfile.Mkdir(conf.Path); err != nil {
-			Logger().Errorf(ctx, "新磁盘队列无法创建缓存目录。报错:%+v", err)
+			Logger().Errorf(ctx, "disk.NewDiskQueue 新磁盘队列无法创建缓存目录。报错:%+v", err)
 			return nil
 		}
 	}
 
 	queue, err := disk.New(conf)
 	if err != nil {
-		Logger().Errorf(ctx, "初始化队列失败: %v", err)
+		Logger().Errorf(ctx, "disk.NewDiskQueue 初始化队列失败: %v", err)
 		return nil
 	}
 	return queue

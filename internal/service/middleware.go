@@ -24,8 +24,6 @@ type (
 		IsExceptAuth(ctx context.Context, appName string, path string) bool
 		// IsExceptLogin 是否是不需要登录的路由地址
 		IsExceptLogin(ctx context.Context, appName string, path string) bool
-		// 暂时废弃 service.Middleware().ResponseHandler_Copy
-		ResponseHandler_Copy(r *ghttp.Request)
 		// ResponseHandler HTTP响应预处理
 		ResponseHandler(r *ghttp.Request)
 	}

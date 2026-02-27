@@ -50,7 +50,7 @@ func consumerListen(ctx context.Context, job Consumer) {
 	)
 
 	if err != nil {
-		Logger().Fatalf(ctx, "InstanceConsumer %s err:%+v", topic, err)
+		Logger().Fatalf(ctx, "consumer.InstanceConsumer %s err:%+v", topic, err)
 		return
 	}
 
@@ -65,6 +65,6 @@ func consumerListen(ctx context.Context, job Consumer) {
 		// 记录消费队列日志
 		ConsumerLog(ctx, topic, mqMsg, err)
 	}); listenErr != nil {
-		Logger().Fatalf(ctx, "消费队列：%s 监听失败, err:%+v", topic, listenErr)
+		Logger().Fatalf(ctx, "consumer.InstanceConsumer：消费队列【%s】监听失败, err:%+v", topic, listenErr)
 	}
 }
